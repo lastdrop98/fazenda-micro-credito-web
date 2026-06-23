@@ -10,14 +10,21 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SobreNosRouteImport } from './routes/sobre-nos'
+import { Route as SimulacaoRouteImport } from './routes/simulacao'
 import { Route as ImpactoRouteImport } from './routes/impacto'
 import { Route as CreditoRouteImport } from './routes/credito'
+import { Route as ContactosRouteImport } from './routes/contactos'
 import { Route as ComoFuncionaRouteImport } from './routes/como-funciona'
 import { Route as IndexRouteImport } from './routes/index'
 
 const SobreNosRoute = SobreNosRouteImport.update({
   id: '/sobre-nos',
   path: '/sobre-nos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SimulacaoRoute = SimulacaoRouteImport.update({
+  id: '/simulacao',
+  path: '/simulacao',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ImpactoRoute = ImpactoRouteImport.update({
@@ -28,6 +35,11 @@ const ImpactoRoute = ImpactoRouteImport.update({
 const CreditoRoute = CreditoRouteImport.update({
   id: '/credito',
   path: '/credito',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactosRoute = ContactosRouteImport.update({
+  id: '/contactos',
+  path: '/contactos',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ComoFuncionaRoute = ComoFuncionaRouteImport.update({
@@ -44,44 +56,68 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/como-funciona': typeof ComoFuncionaRoute
+  '/contactos': typeof ContactosRoute
   '/credito': typeof CreditoRoute
   '/impacto': typeof ImpactoRoute
+  '/simulacao': typeof SimulacaoRoute
   '/sobre-nos': typeof SobreNosRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/como-funciona': typeof ComoFuncionaRoute
+  '/contactos': typeof ContactosRoute
   '/credito': typeof CreditoRoute
   '/impacto': typeof ImpactoRoute
+  '/simulacao': typeof SimulacaoRoute
   '/sobre-nos': typeof SobreNosRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/como-funciona': typeof ComoFuncionaRoute
+  '/contactos': typeof ContactosRoute
   '/credito': typeof CreditoRoute
   '/impacto': typeof ImpactoRoute
+  '/simulacao': typeof SimulacaoRoute
   '/sobre-nos': typeof SobreNosRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/como-funciona' | '/credito' | '/impacto' | '/sobre-nos'
+  fullPaths:
+    | '/'
+    | '/como-funciona'
+    | '/contactos'
+    | '/credito'
+    | '/impacto'
+    | '/simulacao'
+    | '/sobre-nos'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/como-funciona' | '/credito' | '/impacto' | '/sobre-nos'
+  to:
+    | '/'
+    | '/como-funciona'
+    | '/contactos'
+    | '/credito'
+    | '/impacto'
+    | '/simulacao'
+    | '/sobre-nos'
   id:
     | '__root__'
     | '/'
     | '/como-funciona'
+    | '/contactos'
     | '/credito'
     | '/impacto'
+    | '/simulacao'
     | '/sobre-nos'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ComoFuncionaRoute: typeof ComoFuncionaRoute
+  ContactosRoute: typeof ContactosRoute
   CreditoRoute: typeof CreditoRoute
   ImpactoRoute: typeof ImpactoRoute
+  SimulacaoRoute: typeof SimulacaoRoute
   SobreNosRoute: typeof SobreNosRoute
 }
 
@@ -92,6 +128,13 @@ declare module '@tanstack/react-router' {
       path: '/sobre-nos'
       fullPath: '/sobre-nos'
       preLoaderRoute: typeof SobreNosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/simulacao': {
+      id: '/simulacao'
+      path: '/simulacao'
+      fullPath: '/simulacao'
+      preLoaderRoute: typeof SimulacaoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/impacto': {
@@ -106,6 +149,13 @@ declare module '@tanstack/react-router' {
       path: '/credito'
       fullPath: '/credito'
       preLoaderRoute: typeof CreditoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contactos': {
+      id: '/contactos'
+      path: '/contactos'
+      fullPath: '/contactos'
+      preLoaderRoute: typeof ContactosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/como-funciona': {
@@ -128,8 +178,10 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ComoFuncionaRoute: ComoFuncionaRoute,
+  ContactosRoute: ContactosRoute,
   CreditoRoute: CreditoRoute,
   ImpactoRoute: ImpactoRoute,
+  SimulacaoRoute: SimulacaoRoute,
   SobreNosRoute: SobreNosRoute,
 }
 export const routeTree = rootRouteImport
