@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SobreNosRouteImport } from './routes/sobre-nos'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SimulacaoRouteImport } from './routes/simulacao'
 import { Route as ImpactoRouteImport } from './routes/impacto'
 import { Route as CreditoRouteImport } from './routes/credito'
@@ -20,6 +21,11 @@ import { Route as IndexRouteImport } from './routes/index'
 const SobreNosRoute = SobreNosRouteImport.update({
   id: '/sobre-nos',
   path: '/sobre-nos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SimulacaoRoute = SimulacaoRouteImport.update({
@@ -60,6 +66,7 @@ export interface FileRoutesByFullPath {
   '/credito': typeof CreditoRoute
   '/impacto': typeof ImpactoRoute
   '/simulacao': typeof SimulacaoRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre-nos': typeof SobreNosRoute
 }
 export interface FileRoutesByTo {
@@ -69,6 +76,7 @@ export interface FileRoutesByTo {
   '/credito': typeof CreditoRoute
   '/impacto': typeof ImpactoRoute
   '/simulacao': typeof SimulacaoRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre-nos': typeof SobreNosRoute
 }
 export interface FileRoutesById {
@@ -79,6 +87,7 @@ export interface FileRoutesById {
   '/credito': typeof CreditoRoute
   '/impacto': typeof ImpactoRoute
   '/simulacao': typeof SimulacaoRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre-nos': typeof SobreNosRoute
 }
 export interface FileRouteTypes {
@@ -90,6 +99,7 @@ export interface FileRouteTypes {
     | '/credito'
     | '/impacto'
     | '/simulacao'
+    | '/sitemap.xml'
     | '/sobre-nos'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -99,6 +109,7 @@ export interface FileRouteTypes {
     | '/credito'
     | '/impacto'
     | '/simulacao'
+    | '/sitemap.xml'
     | '/sobre-nos'
   id:
     | '__root__'
@@ -108,6 +119,7 @@ export interface FileRouteTypes {
     | '/credito'
     | '/impacto'
     | '/simulacao'
+    | '/sitemap.xml'
     | '/sobre-nos'
   fileRoutesById: FileRoutesById
 }
@@ -118,6 +130,7 @@ export interface RootRouteChildren {
   CreditoRoute: typeof CreditoRoute
   ImpactoRoute: typeof ImpactoRoute
   SimulacaoRoute: typeof SimulacaoRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SobreNosRoute: typeof SobreNosRoute
 }
 
@@ -128,6 +141,13 @@ declare module '@tanstack/react-router' {
       path: '/sobre-nos'
       fullPath: '/sobre-nos'
       preLoaderRoute: typeof SobreNosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/simulacao': {
@@ -182,6 +202,7 @@ const rootRouteChildren: RootRouteChildren = {
   CreditoRoute: CreditoRoute,
   ImpactoRoute: ImpactoRoute,
   SimulacaoRoute: SimulacaoRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   SobreNosRoute: SobreNosRoute,
 }
 export const routeTree = rootRouteImport
