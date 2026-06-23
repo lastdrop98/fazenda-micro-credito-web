@@ -14,7 +14,140 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      contact_messages: {
+        Row: {
+          assunto: string
+          created_at: string
+          email: string
+          id: string
+          mensagem: string
+          nome: string
+          status: string
+          telefone: string
+        }
+        Insert: {
+          assunto: string
+          created_at?: string
+          email: string
+          id?: string
+          mensagem: string
+          nome: string
+          status?: string
+          telefone: string
+        }
+        Update: {
+          assunto?: string
+          created_at?: string
+          email?: string
+          id?: string
+          mensagem?: string
+          nome?: string
+          status?: string
+          telefone?: string
+        }
+        Relationships: []
+      }
+      credit_requests: {
+        Row: {
+          created_at: string
+          email: string
+          finalidade: string | null
+          id: string
+          mensagem: string | null
+          montante_solicitado: number
+          nome_completo: string
+          simulation_id: string | null
+          status: string
+          telefone: string
+          tipo_credito: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          finalidade?: string | null
+          id?: string
+          mensagem?: string | null
+          montante_solicitado: number
+          nome_completo: string
+          simulation_id?: string | null
+          status?: string
+          telefone: string
+          tipo_credito: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          finalidade?: string | null
+          id?: string
+          mensagem?: string | null
+          montante_solicitado?: number
+          nome_completo?: string
+          simulation_id?: string | null
+          status?: string
+          telefone?: string
+          tipo_credito?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "credit_requests_simulation_id_fkey"
+            columns: ["simulation_id"]
+            isOneToOne: false
+            referencedRelation: "credit_simulations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      credit_simulations: {
+        Row: {
+          created_at: string
+          email_cliente: string | null
+          id: string
+          juros_total: number
+          montante: number
+          nome_cliente: string | null
+          num_periodos: number
+          prestacao_por_periodo: number
+          status: string
+          taxa_juros: number
+          taxa_preparo: number
+          telefone_cliente: string | null
+          tipo_credito: string
+          total_a_pagar: number
+        }
+        Insert: {
+          created_at?: string
+          email_cliente?: string | null
+          id?: string
+          juros_total: number
+          montante: number
+          nome_cliente?: string | null
+          num_periodos: number
+          prestacao_por_periodo: number
+          status?: string
+          taxa_juros: number
+          taxa_preparo: number
+          telefone_cliente?: string | null
+          tipo_credito: string
+          total_a_pagar: number
+        }
+        Update: {
+          created_at?: string
+          email_cliente?: string | null
+          id?: string
+          juros_total?: number
+          montante?: number
+          nome_cliente?: string | null
+          num_periodos?: number
+          prestacao_por_periodo?: number
+          status?: string
+          taxa_juros?: number
+          taxa_preparo?: number
+          telefone_cliente?: string | null
+          tipo_credito?: string
+          total_a_pagar?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
