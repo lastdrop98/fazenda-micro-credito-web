@@ -2,9 +2,9 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
-import { Calendar, Zap, Minus, Plus, Loader2 } from "lucide-react";
+import { Calendar, Zap, Minus, Plus, Loader2, Check } from "lucide-react";
 import { PageHero } from "@/components/PageHero";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/lib/supabase";
 
 const searchSchema = z.object({ tipo: z.enum(["mensal", "quinzenal"]).optional() });
 
@@ -74,7 +74,7 @@ function Simulacao() {
     setSaving(false);
     if (error) return toast.error("Erro ao guardar simulação. Tente novamente.");
     setSavedId(data!.id as string);
-    toast.success("Simulação guardada!");
+    toast.success("Simulação guardada com sucesso!");
     if (thenRequest) setShowRequest(true);
   }
 
@@ -171,11 +171,11 @@ function Simulacao() {
               <Row k="Total a Pagar" v={fmt(totalAPagar)} highlight />
             </dl>
             <div className="mt-6 flex flex-col gap-2">
-              <button disabled={saving} onClick={() => guardar(false)} className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/30 py-3 text-sm font-semibold hover:bg-white/10 disabled:opacity-60">
-                {saving && <Loader2 className="animate-spin" size={16} />} Guardar Simulação
+              <button disabled={saving} onClick={() => guardar(false)} className="hover-btn inline-flex items-center justify-center gap-2 rounded-xl border border-white/30 py-3 text-sm font-semibold disabled:opacity-60">
+                {saving ? <><Loader2 className="animate-spin" size={16} /> A enviar...</> : savedId ? <><Check size={16} className="text-brand-green"/> Guardada</> : "Guardar Simulação"}
               </button>
-              <button disabled={saving} onClick={() => guardar(true)} className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-green py-3 text-sm font-semibold text-white hover:bg-brand-green-dark disabled:opacity-60">
-                {saving && <Loader2 className="animate-spin" size={16} />} Solicitar Este Crédito
+              <button disabled={saving} onClick={() => guardar(true)} className="hover-btn inline-flex items-center justify-center gap-2 rounded-xl bg-brand-green py-3 text-sm font-semibold text-white disabled:opacity-60">
+                {saving ? <><Loader2 className="animate-spin" size={16} /> A enviar...</> : "Solicitar Este Crédito"}
               </button>
             </div>
             <p className="mt-4 text-xs text-white/60">Simulação gratuita e sem compromisso. Os valores são indicativos. A decisão final está sujeita a análise de crédito.</p>
