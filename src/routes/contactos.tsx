@@ -2,9 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
-import { MapPin, Phone, Mail, Clock, Globe, Loader2, Facebook, Instagram, Linkedin } from "lucide-react";
+import { MapPin, Phone, Mail, Clock, Globe, Loader2, Facebook, Instagram, Linkedin, MessageCircle } from "lucide-react";
 import { PageHero } from "@/components/PageHero";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/contactos")({
   head: () => ({
@@ -29,6 +29,7 @@ const schema = z.object({
 function Contactos() {
   const [form, setForm] = useState({ nome: "", email: "", telefone: "", assunto: "Solicitar Crédito", mensagem: "" });
   const [loading, setLoading] = useState(false);
+  const [sent, setSent] = useState<typeof form | null>(null);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -39,7 +40,24 @@ function Contactos() {
     setLoading(false);
     if (error) return toast.error("Erro ao enviar mensagem. Por favor tente novamente.");
     toast.success("Mensagem enviada! A nossa equipa entrará em contacto em breve.");
+    setSent(parsed.data);
     setForm({ nome: "", email: "", telefone: "", assunto: "Solicitar Crédito", mensagem: "" });
+  }
+
+  function openMail() {
+    if (!sent) return;
+    const subject = encodeURIComponent(`[Fazenda Website] ${sent.assunto} - ${sent.nome}`);
+    const body = encodeURIComponent(
+      `Nome: ${sent.nome}\nEmail: ${sent.email}\nTelefone: ${sent.telefone}\nAssunto: ${sent.assunto}\n\nMensagem:\n${sent.mensagem}`,
+    );
+    window.open(`mailto:info@fazenda.co.mz?subject=${subject}&body=${body}`);
+  }
+  function openWhatsApp() {
+    if (!sent) return;
+    const waMsg = encodeURIComponent(
+      `Olá Fazenda Microcrédito!\n\nNome: ${sent.nome}\nTelefone: ${sent.telefone}\nAssunto: ${sent.assunto}\n\nMensagem: ${sent.mensagem}`,
+    );
+    window.open(`https://wa.me/258844449380?text=${waMsg}`, "_blank");
   }
 
   const info = [
@@ -68,9 +86,10 @@ function Contactos() {
             ))}
           </div>
           <div className="mt-6 flex gap-3">
-            <a href="#" aria-label="Facebook" className="rounded-full bg-brand-navy p-3 text-white hover:bg-brand-green"><Facebook size={18}/></a>
-            <a href="#" aria-label="Instagram" className="rounded-full bg-brand-navy p-3 text-white hover:bg-brand-green"><Instagram size={18}/></a>
-            <a href="#" aria-label="LinkedIn" className="rounded-full bg-brand-navy p-3 text-white hover:bg-brand-green"><Linkedin size={18}/></a>
+            <a href="https://facebook.com/fazendamicrocredito" target="_blank" rel="noreferrer" aria-label="Facebook" className="rounded-full bg-brand-navy p-3 text-white transition hover:bg-brand-green"><Facebook size={18}/></a>
+            <a href="https://instagram.com/fazendamicrocredito" target="_blank" rel="noreferrer" aria-label="Instagram" className="rounded-full bg-brand-navy p-3 text-white transition hover:bg-brand-green"><Instagram size={18}/></a>
+            <a href="https://linkedin.com/company/fazendamicrocredito" target="_blank" rel="noreferrer" aria-label="LinkedIn" className="rounded-full bg-brand-navy p-3 text-white transition hover:bg-brand-green"><Linkedin size={18}/></a>
+            <a href="https://wa.me/258844449380" target="_blank" rel="noreferrer" aria-label="WhatsApp" className="rounded-full bg-brand-navy p-3 text-white transition hover:bg-brand-green"><MessageCircle size={18}/></a>
           </div>
 
           <a href="https://maps.app.goo.gl/WpvDMgZB7c3i5U7v5" target="_blank" rel="noreferrer" className="mt-6 block overflow-hidden rounded-2xl border border-border">
@@ -106,9 +125,19 @@ function Contactos() {
             <Field label="Mensagem *">
               <textarea value={form.mensagem} onChange={(e)=>setForm({...form, mensagem:e.target.value})} rows={5} required className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:border-brand-green focus:outline-none" />
             </Field>
-            <button type="submit" disabled={loading} className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-green py-3.5 font-semibold text-white hover:bg-brand-green-dark disabled:opacity-60">
+            <button type="submit" disabled={loading} className="hover-btn inline-flex items-center justify-center gap-2 rounded-xl bg-brand-green py-3.5 font-semibold text-white disabled:opacity-60">
               {loading && <Loader2 className="animate-spin" size={16}/>} {loading ? "A enviar..." : "Enviar Mensagem"}
             </button>
+            {sent && (
+              <div className="grid gap-3 sm:grid-cols-2">
+                <button type="button" onClick={openMail} className="hover-btn inline-flex items-center justify-center gap-2 rounded-xl border-2 border-brand-navy py-3 text-sm font-semibold text-brand-navy">
+                  📧 Enviar por Email
+                </button>
+                <button type="button" onClick={openWhatsApp} className="hover-btn inline-flex items-center justify-center gap-2 rounded-xl bg-[#25D366] py-3 text-sm font-semibold text-white">
+                  💬 Enviar por WhatsApp
+                </button>
+              </div>
+            )}
           </div>
         </form>
       </section>
