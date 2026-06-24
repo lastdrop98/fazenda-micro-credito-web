@@ -222,7 +222,11 @@ function RequestForm({ tipo, montante, simulationId }: { tipo: string; montante:
     });
     setLoading(false);
     if (error) return toast.error("Erro ao enviar pedido. Tente novamente.");
-    toast.success("Pedido enviado! A nossa equipa analisará em até 12 horas.");
+    toast.success("Pedido enviado! A nossa equipa contactá-lo-á em até 12 horas.");
+    const resumo = encodeURIComponent(
+      `Olá Fazenda Microcrédito!\n\nNome: ${form.nome_completo}\nTelefone: ${form.telefone}\nEmail: ${form.email}\n\nQuero solicitar:\n• Tipo: ${tipo === "mensal" ? "Meu Crédito Fazenda (Mensal 30%)" : "Meu Cash Rápido (Quinzenal 20%)"}\n• Montante: ${new Intl.NumberFormat("pt-PT",{minimumFractionDigits:2}).format(montante)} MZN\n• Finalidade: ${form.finalidade}\n\n${form.mensagem || ""}`,
+    );
+    window.open(`https://wa.me/258844449380?text=${resumo}`, "_blank");
     setForm({ nome_completo: "", email: "", telefone: "", finalidade: "Capital de Giro", mensagem: "" });
   }
 
