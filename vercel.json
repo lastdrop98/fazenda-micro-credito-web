@@ -2,7 +2,7 @@
   "buildCommand": "npm run vercel-build",
   "installCommand": "npm install",
   "functions": {
-    "api/**/*.js": {
+    "api/index.js": {
       "runtime": "nodejs22.x",
       "includeFiles": "dist/**"
     }
