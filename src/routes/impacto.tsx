@@ -50,7 +50,7 @@ function Impacto() {
       <section className="mx-auto mt-16 max-w-7xl px-6">
         <div className="grid gap-6 md:grid-cols-3">
           {cats.map((c) => (
-            <div key={c.t} className="rounded-2xl border border-border bg-card p-7">
+            <div key={c.t} className="hover-card rounded-2xl border border-border bg-card p-7">
               <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-green-light text-brand-green"><c.icon size={26} /></div>
               <h3 className="mt-5 text-xl font-bold">{c.t}</h3>
               <p className="mt-2 text-sm text-muted-foreground">{c.d}</p>

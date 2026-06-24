@@ -73,11 +73,11 @@ function Credito() {
       <section className="mx-auto mt-16 max-w-7xl px-6">
         <h2 className="text-3xl font-extrabold">Montantes Disponíveis</h2>
         <div className="mt-6 grid gap-5 md:grid-cols-2">
-          <div className="rounded-2xl border border-border bg-card p-7">
+          <div className="hover-card rounded-2xl border border-border bg-card p-7">
             <h4 className="font-bold text-brand-green">Crédito Pessoal</h4>
             <p className="mt-2 text-2xl font-extrabold">10.000 – 150.000 MZN</p>
           </div>
-          <div className="rounded-2xl border border-border bg-card p-7">
+          <div className="hover-card rounded-2xl border border-border bg-card p-7">
             <h4 className="font-bold text-brand-green">Crédito ao Comerciante</h4>
             <p className="mt-2 text-2xl font-extrabold">75.000 – 300.000 MZN</p>
           </div>
