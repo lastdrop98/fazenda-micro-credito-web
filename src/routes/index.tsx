@@ -4,6 +4,7 @@ import {
   Wallet, FileCheck2, Handshake, ShieldCheck, ArrowRight, Play,
   Zap, User, Briefcase, Wheat, Quote,
 } from "lucide-react";
+import { useScrollAnimation, useCountUp } from "@/hooks/useScrollAnimation";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -21,6 +22,7 @@ function Index() {
   return (
     <>
       <Hero />
+      <GreenWave />
       <FeaturesBar />
       <Solucoes />
       <Stats />
@@ -106,7 +108,7 @@ function FeaturesBar() {
       <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
         {features.map((f) => (
           <div key={f.title} className="flex items-start gap-3">
-            <div className="rounded-lg border border-brand-green/40 p-2 text-brand-green"><f.icon size={20} /></div>
+            <div className="hover-icon rounded-lg border border-brand-green/40 p-2 text-brand-green"><f.icon size={20} /></div>
             <div>
               <h4 className="font-semibold text-brand-green">{f.title}</h4>
               <p className="mt-1 text-sm text-white/65">{f.desc}</p>
@@ -115,6 +117,16 @@ function FeaturesBar() {
         ))}
       </div>
     </section>
+  );
+}
+
+function GreenWave() {
+  return (
+    <div className="mx-auto -mt-1 w-[min(1280px,calc(100%-2rem))] overflow-hidden leading-[0]" aria-hidden="true">
+      <svg viewBox="0 0 1280 40" preserveAspectRatio="none" className="block h-6 w-full">
+        <path d="M0,20 C220,0 480,40 720,20 C940,0 1100,32 1280,12 L1280,40 L0,40 Z" fill="#7CB83A" />
+      </svg>
+    </div>
   );
 }
 
@@ -144,7 +156,7 @@ function Solucoes() {
         </div>
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {solucoes.map((s) => (
-            <article key={s.title} className="group overflow-hidden rounded-2xl border border-border bg-card transition hover:-translate-y-1 hover:shadow-xl">
+            <article key={s.title} className="hover-card group overflow-hidden rounded-2xl border border-border bg-card">
               <div className="relative h-32 overflow-hidden">
                 <img src={s.img} alt="" className="h-full w-full object-cover" />
                 <div className="absolute left-4 top-4 rounded-lg bg-brand-green p-2 text-white shadow-lg"><s.icon size={18} /></div>
@@ -152,7 +164,7 @@ function Solucoes() {
               <div className="p-5">
                 <h3 className="font-bold text-foreground">{s.title}</h3>
                 <p className="mt-2 text-sm text-muted-foreground">{s.desc}</p>
-                <Link to="/credito" className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-green">
+                <Link to="/credito" className="hover-arrow mt-4 text-sm font-semibold text-brand-green">
                   Saber mais <ArrowRight size={14} className="transition group-hover:translate-x-1" />
                 </Link>
               </div>
@@ -165,18 +177,24 @@ function Solucoes() {
 }
 
 function Stats() {
+  const { ref, visible } = useScrollAnimation<HTMLDivElement>(0.3);
+  const a = useCountUp(2000, 2000, visible);
+  const b = useCountUp(300000, 2000, visible);
+  const c = useCountUp(12, 2000, visible);
+  const d = useCountUp(2023, 2000, visible);
+  const fmt = (n: number) => new Intl.NumberFormat("pt-PT").format(n);
   const stats = [
-    { v: "2.000+", l: "Negócios Apoiados" },
-    { v: "300.000", l: "MZN Crédito Máximo" },
-    { v: "12h", l: "Aprovação Rápida" },
-    { v: "2023", l: "Licenciada pelo BdM" },
+    { v: `${fmt(a)}+`, l: "Negócios Apoiados" },
+    { v: `${fmt(b)} MZN`, l: "Crédito Máximo" },
+    { v: `${c}h`, l: "Aprovação Rápida" },
+    { v: `${d}`, l: "Licenciada pelo BdM" },
   ];
   return (
-    <section className="mx-auto mt-20 w-[min(1280px,calc(100%-2rem))] rounded-3xl bg-brand-green px-6 py-12 text-white md:px-12">
+    <section ref={ref} className="mx-auto mt-20 w-[min(1280px,calc(100%-2rem))] rounded-3xl bg-brand-green px-6 py-12 text-white md:px-12">
       <div className="grid gap-8 text-center sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((s) => (
           <div key={s.l}>
-            <div className="text-4xl font-extrabold md:text-5xl">{s.v}</div>
+            <div className="text-3xl font-extrabold md:text-4xl">{s.v}</div>
             <div className="mt-2 text-sm opacity-90">{s.l}</div>
           </div>
         ))}
@@ -199,7 +217,7 @@ function Testimonials() {
       </div>
       <div className="mt-10 grid gap-6 md:grid-cols-3">
         {t.map((x) => (
-          <div key={x.n} className="rounded-2xl border border-border bg-card p-6 shadow-sm">
+          <div key={x.n} className="hover-card rounded-2xl border border-border bg-card p-6 shadow-sm">
             <Quote className="text-brand-green" size={28} />
             <p className="mt-3 text-sm leading-relaxed text-foreground">"{x.q}"</p>
             <div className="mt-5 border-t border-border pt-4">
@@ -220,8 +238,8 @@ function CtaBanner() {
         <h2 className="text-3xl font-extrabold md:text-4xl">Pronto para crescer o teu negócio?</h2>
         <p className="mt-3 text-white/75">Solicita o teu crédito hoje e recebe aprovação em até 12 horas.</p>
         <div className="mt-7 flex flex-wrap justify-center gap-3">
-          <Link to="/contactos" className="rounded-xl bg-brand-green px-6 py-3.5 text-sm font-semibold text-white hover:bg-brand-green-dark">Solicitar Crédito</Link>
-          <Link to="/simulacao" className="rounded-xl border border-white/30 px-6 py-3.5 text-sm font-semibold text-white hover:bg-white/10">Fazer Simulação</Link>
+          <Link to="/contactos" className="hover-btn rounded-xl bg-brand-green px-6 py-3.5 text-sm font-semibold text-white">Solicitar Crédito</Link>
+          <Link to="/simulacao" className="hover-btn rounded-xl border border-white/30 px-6 py-3.5 text-sm font-semibold text-white">Fazer Simulação</Link>
         </div>
       </div>
     </section>
