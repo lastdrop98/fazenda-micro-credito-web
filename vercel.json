@@ -1,5 +1,9 @@
 {
-  "buildCommand": "npm run build",
-  "installCommand": "npm install",
-  "framework": "vite"
+  "buildCommand": "bash build.sh",
+  "outputDirectory": ".vercel/output/static",
+  "installCommand": "",
+  "framework": "vite",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
 }
