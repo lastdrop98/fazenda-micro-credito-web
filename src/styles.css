@@ -168,3 +168,89 @@
 @utility text-accent-green {
   color: var(--brand-green);
 }
+
+/* Global interactivity primitives */
+@layer components {
+  .top-green-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: #7CB83A;
+    z-index: 9999;
+  }
+  .hover-card {
+    transition: all 0.3s ease;
+    border-left: 3px solid transparent;
+    cursor: pointer;
+  }
+  .hover-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 40px -12px rgba(26, 35, 50, 0.18);
+    border-left-color: #7CB83A;
+  }
+  .hover-btn {
+    transition: all 0.2s ease;
+  }
+  .hover-btn:hover {
+    transform: scale(1.03);
+    filter: brightness(1.1);
+  }
+  .hover-link {
+    transition: color 0.2s ease;
+  }
+  .hover-link:hover {
+    color: #7CB83A;
+  }
+  .hover-arrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    transition: color 0.2s ease;
+  }
+  .hover-arrow svg {
+    transition: transform 0.25s ease;
+  }
+  .hover-arrow:hover {
+    color: #7CB83A;
+  }
+  .hover-arrow:hover svg {
+    transform: translateX(6px);
+  }
+  .hover-icon {
+    transition: transform 0.3s ease;
+    display: inline-flex;
+  }
+  .hover-icon:hover {
+    transform: rotate(10deg) scale(1.1);
+  }
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .nav-active-underline {
+    position: relative;
+  }
+  .nav-active-underline::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -6px;
+    height: 2px;
+    background: #7CB83A;
+    transform-origin: left;
+    transform: scaleX(0);
+    transition: transform 0.35s ease;
+  }
+  .nav-active-underline.active::after,
+  .nav-active-underline[data-status="active"]::after {
+    transform: scaleX(1);
+  }
+}
