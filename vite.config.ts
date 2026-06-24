@@ -8,12 +8,8 @@ export default defineConfig({
   plugins: [
     tanstackStart({
       server: {
-        entry: 'server',
-        prerender: {
-          routes: ['/']
-        }
-      },
-      adapter: 'vercel'
+        entry: 'server'
+      }
     }),
     react(),
     tsConfigPaths(),
