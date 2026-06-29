@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
-import { MapPin, Phone, Mail, Clock, Globe, Loader2, Facebook, Instagram, Linkedin, MessageCircle } from "lucide-react";
+import { MapPin, Phone, Mail, Clock, Loader2, Facebook, Instagram, Linkedin, MessageCircle } from "lucide-react";
 import { PageHero } from "@/components/PageHero";
 import { supabase } from "@/lib/supabase";
 
@@ -29,7 +29,6 @@ const schema = z.object({
 function Contactos() {
   const [form, setForm] = useState({ nome: "", email: "", telefone: "", assunto: "Solicitar Crédito", mensagem: "" });
   const [loading, setLoading] = useState(false);
-  const [sent, setSent] = useState<typeof form | null>(null);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -40,31 +39,33 @@ function Contactos() {
     setLoading(false);
     if (error) return toast.error("Erro ao enviar mensagem. Por favor tente novamente.");
     toast.success("Mensagem enviada! A nossa equipa entrará em contacto em breve.");
-    setSent(parsed.data);
     setForm({ nome: "", email: "", telefone: "", assunto: "Solicitar Crédito", mensagem: "" });
   }
 
+  const intros: Record<string, string> = {
+    "Solicitar Crédito": "Olá Fazenda Microcrédito! Gostaria de solicitar um crédito.",
+    "Fazer Simulação": "Olá Fazenda Microcrédito! Gostaria de fazer uma simulação de crédito.",
+    "Informações Gerais": "Olá Fazenda Microcrédito! Gostaria de obter mais informações sobre os vossos serviços.",
+    "Reclamação": "Olá Fazenda Microcrédito! Gostaria de apresentar uma reclamação.",
+    "Outro": "Olá Fazenda Microcrédito! Gostaria de entrar em contacto convosco.",
+  };
+  function buildBody() {
+    const intro = intros[form.assunto] ?? intros["Outro"];
+    return `${intro}\n\nNome: ${form.nome || "—"}\nEmail: ${form.email || "—"}\nTelefone: ${form.telefone || "—"}\nAssunto: ${form.assunto}\n\nMensagem:\n${form.mensagem || "—"}`;
+  }
   function openMail() {
-    if (!sent) return;
-    const subject = encodeURIComponent(`[Fazenda Website] ${sent.assunto} - ${sent.nome}`);
-    const body = encodeURIComponent(
-      `Nome: ${sent.nome}\nEmail: ${sent.email}\nTelefone: ${sent.telefone}\nAssunto: ${sent.assunto}\n\nMensagem:\n${sent.mensagem}`,
-    );
-    window.open(`mailto:info@fazenda.co.mz?subject=${subject}&body=${body}`);
+    const subject = encodeURIComponent(`[Fazenda] ${form.assunto}${form.nome ? " - " + form.nome : ""}`);
+    window.open(`mailto:info@fazenda.co.mz?subject=${subject}&body=${encodeURIComponent(buildBody())}`);
   }
   function openWhatsApp() {
-    if (!sent) return;
-    const waMsg = encodeURIComponent(
-      `Olá Fazenda Microcrédito!\n\nNome: ${sent.nome}\nTelefone: ${sent.telefone}\nAssunto: ${sent.assunto}\n\nMensagem: ${sent.mensagem}`,
-    );
-    window.open(`https://wa.me/258844449380?text=${waMsg}`, "_blank");
+    window.open(`https://wa.me/258844449380?text=${encodeURIComponent(buildBody())}`, "_blank");
   }
 
   const info = [
     { icon: MapPin, t: "Endereço", v: "Av. Base Ntchinga, nº 387, Edifício Karingana, Bairro da Coop, Maputo" },
-    { icon: Phone, t: "Telefone", v: "+258 84 444 9380  /  +258 84 444 9998" },
+    { icon: MessageCircle, t: "WhatsApp", v: "+258 84 444 9380" },
+    { icon: Phone, t: "Telefone", v: "+258 84 444 9998" },
     { icon: Mail, t: "Email", v: "info@fazenda.co.mz" },
-    { icon: Globe, t: "Website", v: "www.fazenda.co.mz" },
     { icon: Clock, t: "Horário", v: "Segunda a Sexta: 9H00 – 16H00" },
   ];
 
@@ -128,16 +129,14 @@ function Contactos() {
             <button type="submit" disabled={loading} className="hover-btn inline-flex items-center justify-center gap-2 rounded-xl bg-brand-green py-3.5 font-semibold text-white disabled:opacity-60">
               {loading && <Loader2 className="animate-spin" size={16}/>} {loading ? "A enviar..." : "Enviar Mensagem"}
             </button>
-            {sent && (
-              <div className="grid gap-3 sm:grid-cols-2">
-                <button type="button" onClick={openMail} className="hover-btn inline-flex items-center justify-center gap-2 rounded-xl border-2 border-brand-navy py-3 text-sm font-semibold text-brand-navy">
-                  📧 Enviar por Email
-                </button>
-                <button type="button" onClick={openWhatsApp} className="hover-btn inline-flex items-center justify-center gap-2 rounded-xl bg-[#25D366] py-3 text-sm font-semibold text-white">
-                  💬 Enviar por WhatsApp
-                </button>
-              </div>
-            )}
+            <div className="grid gap-3 sm:grid-cols-2">
+              <button type="button" onClick={openMail} className="hover-btn inline-flex items-center justify-center gap-2 rounded-xl border-2 border-brand-navy py-3 text-sm font-semibold text-brand-navy">
+                <Mail size={16}/> Enviar por Email
+              </button>
+              <button type="button" onClick={openWhatsApp} className="hover-btn inline-flex items-center justify-center gap-2 rounded-xl bg-[#25D366] py-3 text-sm font-semibold text-white">
+                <MessageCircle size={16}/> Enviar por WhatsApp
+              </button>
+            </div>
           </div>
         </form>
       </section>

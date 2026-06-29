@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Link } from "@tanstack/react-router";
 import {
   Wallet, FileCheck2, Handshake, ShieldCheck, ArrowRight, Play,
-  Zap, User, Briefcase, Wheat, Quote,
+  Zap, Calendar, Quote,
 } from "lucide-react";
 import { useScrollAnimation, useCountUp } from "@/hooks/useScrollAnimation";
 
@@ -36,8 +36,8 @@ function Hero() {
   return (
     <section className="relative w-full overflow-hidden bg-brand-navy text-white">
       <img
-        src="https://images.unsplash.com/photo-1593113598332-cd288d649433?w=1920&q=80"
-        alt="Empreendedora moçambicana com produtos agrícolas"
+        src="https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?w=1920&q=80"
+        alt="Empreendedora a contar dinheiro do seu negócio"
         className="absolute inset-0 h-full w-full object-cover"
       />
       <div className="absolute inset-0 bg-gradient-to-r from-brand-navy via-brand-navy/80 to-brand-navy/10" />
@@ -124,18 +124,29 @@ function FeaturesBar() {
 
 function GreenWave() {
   return (
-    <div className="w-full overflow-hidden bg-brand-navy leading-[0]" aria-hidden="true">
-      <svg viewBox="0 0 1440 60" preserveAspectRatio="none" className="block h-12 w-full md:h-16">
-        <path d="M0,0 C360,60 1080,60 1440,0 L1440,0 L0,0 Z" fill="#7CB83A" />
+    <div className="w-full bg-brand-navy leading-[0]" aria-hidden="true">
+      <svg viewBox="0 0 1440 24" preserveAspectRatio="none" className="block h-4 w-full md:h-5">
+        <path d="M0,4 C480,22 960,22 1440,4" fill="none" stroke="#7CB83A" strokeWidth="3" />
       </svg>
     </div>
   );
 }
 
 const solucoes = [
-  { icon: User, title: "Crédito Pessoal", desc: "Soluções rápidas para realizar os teus planos pessoais.", img: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&q=80" },
-  { icon: Briefcase, title: "Crédito para Negócios", desc: "Impulsiona o crescimento da tua empresa.", img: "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=600&q=80" },
-  { icon: Wheat, title: "Crédito Agrícola", desc: "Apoio ao produtor para produzir mais e melhor.", img: "https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=600&q=80" },
+  {
+    icon: Calendar,
+    title: "Meu Crédito Fazenda",
+    desc: "Crédito mensal com taxa de 30% ao mês. Montantes até 300.000 MZN para impulsionar o teu negócio.",
+    img: "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=800&q=80",
+    badge: "30% ao mês",
+  },
+  {
+    icon: Zap,
+    title: "Meu Cash Rápido",
+    desc: "Crédito quinzenal com taxa de 20% por quinzena. Aprovação imediata para necessidades urgentes.",
+    img: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&q=80",
+    badge: "20% quinzenal",
+  },
 ];
 
 function Solucoes() {
@@ -156,17 +167,18 @@ function Solucoes() {
             Ver Todas as Soluções
           </Link>
         </div>
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-5 sm:grid-cols-2">
           {solucoes.map((s) => (
             <article key={s.title} className="hover-card group overflow-hidden rounded-2xl border border-border bg-card">
-              <div className="relative h-32 overflow-hidden">
+              <div className="relative h-44 overflow-hidden">
                 <img src={s.img} alt="" className="h-full w-full object-cover" />
                 <div className="absolute left-4 top-4 rounded-lg bg-brand-green p-2 text-white shadow-lg"><s.icon size={18} /></div>
+                <div className="absolute right-4 top-4 rounded-full bg-white px-3 py-1 text-xs font-bold text-brand-green shadow">{s.badge}</div>
               </div>
               <div className="p-5">
                 <h3 className="font-bold text-foreground">{s.title}</h3>
                 <p className="mt-2 text-sm text-muted-foreground">{s.desc}</p>
-                <Link to="/credito" className="hover-arrow mt-4 text-sm font-semibold text-brand-green">
+                <Link to="/simulacao" className="hover-arrow mt-4 inline-flex items-center gap-1 text-sm font-semibold text-brand-green">
                   Saber mais <ArrowRight size={14} className="transition group-hover:translate-x-1" />
                 </Link>
               </div>

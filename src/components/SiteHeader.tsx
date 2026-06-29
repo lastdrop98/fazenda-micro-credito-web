@@ -17,7 +17,7 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false);
   return (
     <header className="fixed top-5 left-1/2 z-50 w-[min(1100px,90%)] -translate-x-1/2">
-      <div className="flex items-center justify-between gap-4 rounded-full border border-border bg-white/95 px-5 py-3 shadow-[0_4px_20px_rgba(0,0,0,0.15)] backdrop-blur-md md:px-6">
+      <div className="flex items-center justify-between gap-4 rounded-full border border-border bg-white px-5 py-3 shadow-[0_4px_20px_rgba(0,0,0,0.15)] md:px-6">
         <Link to="/" className="flex items-center" aria-label="Fazenda Microcrédito">
           <Logo className="h-9 md:h-10" />
         </Link>

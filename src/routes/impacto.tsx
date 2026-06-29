@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageHero } from "@/components/PageHero";
 import { Wheat, Store, Home } from "lucide-react";
+import { useScrollAnimation, useCountUp } from "@/hooks/useScrollAnimation";
 
 export const Route = createFileRoute("/impacto")({
   head: () => ({
@@ -15,11 +16,17 @@ export const Route = createFileRoute("/impacto")({
 });
 
 function Impacto() {
+  const { ref, visible } = useScrollAnimation<HTMLDivElement>(0.3);
+  const a = useCountUp(2000, 2000, visible);
+  const b = useCountUp(3, 1500, visible);
+  const c = useCountUp(300000, 2200, visible);
+  const d = useCountUp(12, 1500, visible);
+  const fmt = (n: number) => new Intl.NumberFormat("pt-PT").format(n);
   const stats = [
-    { v: "2.000+", l: "Negócios Apoiados" },
-    { v: "3", l: "Anos de Operação" },
-    { v: "300.000", l: "MZN Montante Máximo" },
-    { v: "12h", l: "Aprovação Média" },
+    { v: `${fmt(a)}+`, l: "Negócios Apoiados" },
+    { v: `${b}`, l: "Anos de Operação" },
+    { v: `${fmt(c)}`, l: "MZN Montante Máximo" },
+    { v: `${d}h`, l: "Aprovação Média" },
   ];
   const cats = [
     { icon: Wheat, t: "Agricultores", d: "Apoiamos produtores rurais com capital para sementes, equipamento e expansão da produção." },
@@ -29,7 +36,7 @@ function Impacto() {
   return (
     <>
       <PageHero title="O Nosso Impacto" breadcrumb="Impacto" subtitle="Acreditamos no potencial das pessoas. Cada crédito é uma oportunidade de transformação." />
-      <section className="mx-auto mt-16 w-[min(1280px,calc(100%-2rem))] rounded-3xl bg-brand-green px-6 py-12 text-white md:px-12">
+      <section ref={ref} className="mx-auto mt-16 w-[min(1280px,calc(100%-2rem))] rounded-3xl bg-brand-green px-6 py-12 text-white md:px-12">
         <div className="grid gap-8 text-center sm:grid-cols-2 lg:grid-cols-4">
           {stats.map((s) => (
             <div key={s.l}>
