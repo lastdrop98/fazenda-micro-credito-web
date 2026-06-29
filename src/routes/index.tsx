@@ -34,14 +34,14 @@ function Index() {
 
 function Hero() {
   return (
-    <section className="relative mx-auto mt-4 w-[min(1280px,calc(100%-2rem))] overflow-hidden rounded-3xl bg-brand-navy text-white">
+    <section className="relative w-full overflow-hidden bg-brand-navy text-white">
       <img
-        src="https://images.unsplash.com/photo-1607453998774-d533f65dac99?w=1600&q=80"
-        alt=""
-        className="absolute inset-0 h-full w-full object-cover opacity-60"
+        src="https://images.unsplash.com/photo-1593113598332-cd288d649433?w=1920&q=80"
+        alt="Empreendedora moçambicana com produtos agrícolas"
+        className="absolute inset-0 h-full w-full object-cover"
       />
-      <div className="absolute inset-0 bg-gradient-to-r from-brand-navy via-brand-navy/85 to-brand-navy/20" />
-      <div className="relative grid gap-10 px-6 py-16 md:px-12 lg:grid-cols-2 lg:py-24">
+      <div className="absolute inset-0 bg-gradient-to-r from-brand-navy via-brand-navy/80 to-brand-navy/10" />
+      <div className="relative mx-auto grid min-h-[100vh] max-w-7xl gap-10 px-6 pb-20 pt-32 md:px-10 lg:grid-cols-2 lg:pt-40">
         <div className="max-w-xl">
           <span className="inline-flex rounded-full bg-white/10 px-4 py-1.5 text-xs font-medium text-white/90 backdrop-blur">
             Microcrédito em Moçambique
