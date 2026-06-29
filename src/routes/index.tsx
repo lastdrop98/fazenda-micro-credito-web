@@ -104,11 +104,13 @@ const features = [
 
 function FeaturesBar() {
   return (
-    <section className="mx-auto -mt-2 w-[min(1280px,calc(100%-2rem))] rounded-b-3xl bg-brand-navy px-6 py-10 text-white md:px-12">
-      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+    <section className="w-full bg-brand-navy px-6 py-12 text-white md:px-12">
+      <div className="mx-auto grid max-w-7xl gap-8 md:grid-cols-2 lg:grid-cols-4">
         {features.map((f) => (
           <div key={f.title} className="flex items-start gap-3">
-            <div className="hover-icon rounded-lg border border-brand-green/40 p-2 text-brand-green"><f.icon size={20} /></div>
+            <div className="hover-icon rounded-lg border-t-[3px] border-x border-b border-brand-green p-2 text-brand-green">
+              <f.icon size={20} />
+            </div>
             <div>
               <h4 className="font-semibold text-brand-green">{f.title}</h4>
               <p className="mt-1 text-sm text-white/65">{f.desc}</p>
@@ -122,9 +124,9 @@ function FeaturesBar() {
 
 function GreenWave() {
   return (
-    <div className="mx-auto -mt-1 w-[min(1280px,calc(100%-2rem))] overflow-hidden leading-[0]" aria-hidden="true">
-      <svg viewBox="0 0 1280 40" preserveAspectRatio="none" className="block h-6 w-full">
-        <path d="M0,20 C220,0 480,40 720,20 C940,0 1100,32 1280,12 L1280,40 L0,40 Z" fill="#7CB83A" />
+    <div className="w-full overflow-hidden bg-brand-navy leading-[0]" aria-hidden="true">
+      <svg viewBox="0 0 1440 60" preserveAspectRatio="none" className="block h-12 w-full md:h-16">
+        <path d="M0,0 C360,60 1080,60 1440,0 L1440,0 L0,0 Z" fill="#7CB83A" />
       </svg>
     </div>
   );
