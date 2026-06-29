@@ -3,7 +3,7 @@ import { ChevronRight } from "lucide-react";
 
 export function PageHero({ title, breadcrumb, subtitle }: { title: string; breadcrumb?: string; subtitle?: string }) {
   return (
-    <section className="mx-auto mt-4 w-[min(1280px,calc(100%-2rem))] rounded-3xl bg-brand-navy px-6 py-16 text-white md:px-12 md:py-20">
+    <section className="mx-auto mt-28 w-[min(1280px,calc(100%-2rem))] rounded-3xl bg-brand-navy px-6 py-16 text-white md:px-12 md:py-20">
       <div className="flex items-center gap-2 text-xs text-white/60">
         <Link to="/" className="hover:text-brand-green">Início</Link>
         {breadcrumb && <><ChevronRight size={12} /><span className="text-white/80">{breadcrumb}</span></>}
