@@ -169,6 +169,17 @@
   color: var(--brand-green);
 }
 
+/* Hide Lovable editor badge in published preview */
+a[href*="lovable.dev"],
+a[href*="lovable.app/edit"],
+[data-lovable-badge],
+.lovable-badge {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 /* Global interactivity primitives */
 @layer components {
   .top-green-bar {
