@@ -16,8 +16,8 @@ const links = [
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
   return (
-    <header className="sticky top-6 z-40 mx-auto w-[min(1280px,calc(100%-2rem))]">
-      <div className="flex items-center justify-between gap-4 rounded-2xl border border-border bg-background/90 px-4 py-3 shadow-[0_8px_30px_rgba(26,35,50,0.08)] backdrop-blur-md md:px-6">
+    <header className="fixed top-5 left-1/2 z-50 w-[min(1100px,90%)] -translate-x-1/2">
+      <div className="flex items-center justify-between gap-4 rounded-full border border-border bg-white/95 px-5 py-3 shadow-[0_4px_20px_rgba(0,0,0,0.15)] backdrop-blur-md md:px-6">
         <Link to="/" className="flex items-center" aria-label="Fazenda Microcrédito">
           <Logo className="h-9 md:h-10" />
         </Link>
