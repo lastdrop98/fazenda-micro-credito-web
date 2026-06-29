@@ -89,8 +89,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary" },
       { name: "twitter:title", content: "Fazenda Microcrédito — Crédito acessível em Moçambique" },
       { name: "twitter:description", content: "Instituição de microcrédito licenciada pelo Banco de Moçambique. Soluções de crédito acessíveis para negócios, famílias e indivíduos." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/92666100-e792-4531-b891-2d74c4a90e35/id-preview-4aeab3da--e8fa9ffc-47c8-49dc-bb93-17b1eef8755b.lovable.app-1782292390476.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/92666100-e792-4531-b891-2d74c4a90e35/id-preview-4aeab3da--e8fa9ffc-47c8-49dc-bb93-17b1eef8755b.lovable.app-1782292390476.png" },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/XtuyJ8lL0vUrUJO5TCLsg6vCs4h1/social-images/social-1782725049428-Captura_de_ecrã_2026-06-29,_às_11.23.27.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/XtuyJ8lL0vUrUJO5TCLsg6vCs4h1/social-images/social-1782725049428-Captura_de_ecrã_2026-06-29,_às_11.23.27.webp" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
