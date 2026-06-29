@@ -2,9 +2,10 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
-import { Calendar, Zap, Minus, Plus, Loader2, Check } from "lucide-react";
+import { Calendar, Zap, Minus, Plus, Loader2, Check, Download, Mail } from "lucide-react";
 import { PageHero } from "@/components/PageHero";
 import { supabase } from "@/lib/supabase";
+import jsPDF from "jspdf";
 
 const searchSchema = z.object({ tipo: z.enum(["mensal", "quinzenal"]).optional() });
 
@@ -34,8 +35,8 @@ function Simulacao() {
   const [telefone, setTelefone] = useState("");
   const [email, setEmail] = useState("");
   const [saving, setSaving] = useState(false);
+  const [requesting, setRequesting] = useState(false);
   const [savedId, setSavedId] = useState<string | null>(null);
-  const [showRequest, setShowRequest] = useState(false);
 
   const { taxa, taxaPreparo, jurosTotal, prestacao, totalAPagar } = useMemo(() => {
     const taxa = tipo === "mensal" ? 0.3 : 0.2;
@@ -51,7 +52,45 @@ function Simulacao() {
   const periodoLabel = tipo === "mensal" ? "mês" : "quinzena";
   const periodosLabel = tipo === "mensal" ? "mes(es)" : "quinzena(s)";
 
-  async function guardar(thenRequest = false) {
+  function generatePdf(id?: string | null) {
+    const doc = new jsPDF();
+    const periodoLabel = tipo === "mensal" ? "mês" : "quinzena";
+    const periodosLabel = tipo === "mensal" ? "mes(es)" : "quinzena(s)";
+    doc.setFillColor(26, 35, 50);
+    doc.rect(0, 0, 210, 30, "F");
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(18);
+    doc.text("Fazenda Microcrédito", 14, 19);
+    doc.setFontSize(10);
+    doc.text("Simulação de Crédito", 14, 26);
+    doc.setTextColor(20, 20, 20);
+    doc.setFontSize(11);
+    let y = 45;
+    const line = (k: string, v: string) => { doc.setFont("helvetica","bold"); doc.text(k, 14, y); doc.setFont("helvetica","normal"); doc.text(v, 95, y); y += 8; };
+    line("Data:", new Date().toLocaleString("pt-PT"));
+    if (id) line("Referência:", id.slice(0, 8).toUpperCase());
+    if (nome) line("Nome:", nome);
+    if (telefone) line("Telefone:", telefone);
+    if (email) line("Email:", email);
+    y += 4;
+    doc.setDrawColor(124, 184, 58); doc.line(14, y, 196, y); y += 8;
+    line("Tipo de Crédito:", tipo === "mensal" ? "Meu Crédito Fazenda (Mensal)" : "Meu Cash Rápido (Quinzenal)");
+    line("Montante Solicitado:", fmt(montante));
+    line("Taxa de Juros:", `${(taxa * 100).toFixed(0)}% por ${periodoLabel}`);
+    line("Número de Períodos:", `${periodos} ${periodosLabel}`);
+    line("Taxa de Preparo (4%):", fmt(taxaPreparo));
+    line("Juros Total:", fmt(jurosTotal));
+    y += 4;
+    doc.setDrawColor(124, 184, 58); doc.line(14, y, 196, y); y += 8;
+    doc.setTextColor(124, 184, 58); doc.setFont("helvetica","bold");
+    doc.text("Prestação por Período:", 14, y); doc.text(fmt(prestacao), 95, y); y += 8;
+    doc.text("Total a Pagar:", 14, y); doc.text(fmt(totalAPagar), 95, y);
+    doc.setTextColor(120,120,120); doc.setFont("helvetica","normal"); doc.setFontSize(8);
+    doc.text("Simulação indicativa. Sujeita a análise de crédito. Fazenda Microcrédito — Licenciada pelo Banco de Moçambique.", 14, 285);
+    doc.save(`simulacao-fazenda-${Date.now()}.pdf`);
+  }
+
+  async function guardar() {
     if (montante < 10000) return toast.error("Montante mínimo: 10.000 MZN");
     setSaving(true);
     const { data, error } = await supabase
@@ -72,10 +111,59 @@ function Simulacao() {
       .select()
       .single();
     setSaving(false);
-    if (error) return toast.error("Erro ao guardar simulação. Tente novamente.");
-    setSavedId(data!.id as string);
-    toast.success("Simulação guardada com sucesso!");
-    if (thenRequest) setShowRequest(true);
+    if (error) { toast.error("Erro ao guardar. A descarregar PDF mesmo assim."); generatePdf(null); return; }
+    const id = data!.id as string;
+    setSavedId(id);
+    toast.success("Simulação guardada! PDF a ser descarregado.");
+    generatePdf(id);
+  }
+
+  async function solicitar() {
+    if (montante < 10000) return toast.error("Montante mínimo: 10.000 MZN");
+    if (!nome || !telefone || !email) return toast.error("Preenche Nome, Telefone e Email para solicitar.");
+    setRequesting(true);
+    let id = savedId;
+    if (!id) {
+      const { data } = await supabase.from("credit_simulations").insert({
+        tipo_credito: tipo, montante, num_periodos: periodos, taxa_juros: taxa,
+        taxa_preparo: taxaPreparo, juros_total: jurosTotal, prestacao_por_periodo: prestacao,
+        total_a_pagar: totalAPagar, nome_cliente: nome, telefone_cliente: telefone, email_cliente: email,
+      }).select().single();
+      id = (data?.id as string) ?? null;
+      if (id) setSavedId(id);
+    }
+    await supabase.from("credit_requests").insert({
+      nome_completo: nome, email, telefone,
+      tipo_credito: tipo, montante_solicitado: montante,
+      finalidade: "Crédito simulado", simulation_id: id,
+    });
+    setRequesting(false);
+    const periodoLabel = tipo === "mensal" ? "mês" : "quinzena";
+    const subject = encodeURIComponent(`[Fazenda] Pedido de Crédito - ${nome}`);
+    const body =
+`Olá Fazenda Microcrédito!
+
+Gostaria de solicitar o crédito conforme a simulação abaixo.
+
+— DADOS DO CLIENTE —
+Nome: ${nome}
+Telefone: ${telefone}
+Email: ${email}
+
+— SIMULAÇÃO —
+Tipo: ${tipo === "mensal" ? "Meu Crédito Fazenda (Mensal 30%)" : "Meu Cash Rápido (Quinzenal 20%)"}
+Montante Solicitado: ${fmt(montante)}
+Taxa de Juros: ${(taxa * 100).toFixed(0)}% por ${periodoLabel}
+Períodos: ${periodos}
+Taxa de Preparo: ${fmt(taxaPreparo)}
+Juros Total: ${fmt(jurosTotal)}
+Prestação por Período: ${fmt(prestacao)}
+Total a Pagar: ${fmt(totalAPagar)}
+
+Referência: ${id ? id.slice(0, 8).toUpperCase() : "—"}
+`;
+    toast.success("Pedido registado! A abrir o teu email...");
+    window.open(`mailto:info@fazenda.co.mz?subject=${subject}&body=${encodeURIComponent(body)}`);
   }
 
   return (
@@ -171,21 +259,17 @@ function Simulacao() {
               <Row k="Total a Pagar" v={fmt(totalAPagar)} highlight />
             </dl>
             <div className="mt-6 flex flex-col gap-2">
-              <button disabled={saving} onClick={() => guardar(false)} className="hover-btn inline-flex items-center justify-center gap-2 rounded-xl border border-white/30 py-3 text-sm font-semibold disabled:opacity-60">
-                {saving ? <><Loader2 className="animate-spin" size={16} /> A enviar...</> : savedId ? <><Check size={16} className="text-brand-green"/> Guardada</> : "Guardar Simulação"}
+              <button disabled={saving} onClick={guardar} className="hover-btn inline-flex items-center justify-center gap-2 rounded-xl border border-white/30 py-3 text-sm font-semibold disabled:opacity-60">
+                {saving ? <><Loader2 className="animate-spin" size={16} /> A guardar...</> : savedId ? <><Check size={16} className="text-brand-green"/> <Download size={14}/> Guardar / PDF</> : <><Download size={14}/> Guardar Simulação (PDF)</>}
               </button>
-              <button disabled={saving} onClick={() => guardar(true)} className="hover-btn inline-flex items-center justify-center gap-2 rounded-xl bg-brand-green py-3 text-sm font-semibold text-white disabled:opacity-60">
-                {saving ? <><Loader2 className="animate-spin" size={16} /> A enviar...</> : "Solicitar Este Crédito"}
+              <button disabled={requesting} onClick={solicitar} className="hover-btn inline-flex items-center justify-center gap-2 rounded-xl bg-brand-green py-3 text-sm font-semibold text-white disabled:opacity-60">
+                {requesting ? <><Loader2 className="animate-spin" size={16} /> A enviar...</> : <><Mail size={14}/> Solicitar Este Crédito</>}
               </button>
             </div>
             <p className="mt-4 text-xs text-white/60">Simulação gratuita e sem compromisso. Os valores são indicativos. A decisão final está sujeita a análise de crédito.</p>
           </div>
         </aside>
       </section>
-
-      {showRequest && (
-        <RequestForm tipo={tipo} montante={montante} simulationId={savedId} />
-      )}
     </>
   );
 }
@@ -197,61 +281,4 @@ function Row({ k, v, highlight }: { k: string; v: string; highlight?: boolean })
       <dd className={highlight ? "text-brand-green font-bold text-base" : "font-semibold"}>{v}</dd>
     </div>
   );
-}
-
-function RequestForm({ tipo, montante, simulationId }: { tipo: string; montante: number; simulationId: string | null }) {
-  const [form, setForm] = useState({ nome_completo: "", email: "", telefone: "", finalidade: "Capital de Giro", mensagem: "" });
-  const [loading, setLoading] = useState(false);
-
-  async function submit(e: React.FormEvent) {
-    e.preventDefault();
-    const schema = z.object({
-      nome_completo: z.string().min(2, "Nome muito curto"),
-      email: z.string().email("Email inválido"),
-      telefone: z.string().min(8, "Telefone inválido"),
-    });
-    const parsed = schema.safeParse(form);
-    if (!parsed.success) return toast.error(parsed.error.issues[0].message);
-
-    setLoading(true);
-    const { error } = await supabase.from("credit_requests").insert({
-      ...form,
-      tipo_credito: tipo,
-      montante_solicitado: montante,
-      simulation_id: simulationId,
-    });
-    setLoading(false);
-    if (error) return toast.error("Erro ao enviar pedido. Tente novamente.");
-    toast.success("Pedido enviado! A nossa equipa contactá-lo-á em até 12 horas.");
-    const resumo = encodeURIComponent(
-      `Olá Fazenda Microcrédito!\n\nNome: ${form.nome_completo}\nTelefone: ${form.telefone}\nEmail: ${form.email}\n\nQuero solicitar:\n• Tipo: ${tipo === "mensal" ? "Meu Crédito Fazenda (Mensal 30%)" : "Meu Cash Rápido (Quinzenal 20%)"}\n• Montante: ${new Intl.NumberFormat("pt-PT",{minimumFractionDigits:2}).format(montante)} MZN\n• Finalidade: ${form.finalidade}\n\n${form.mensagem || ""}`,
-    );
-    window.open(`https://wa.me/258844449380?text=${resumo}`, "_blank");
-    setForm({ nome_completo: "", email: "", telefone: "", finalidade: "Capital de Giro", mensagem: "" });
-  }
-
-  return (
-    <section className="mx-auto mt-16 max-w-3xl px-6">
-      <div className="rounded-3xl border border-border bg-card p-8 shadow-lg">
-        <h2 className="text-2xl font-extrabold">Solicitar Crédito</h2>
-        <p className="mt-2 text-sm text-muted-foreground">Preenche os teus dados — entraremos em contacto em até 12h.</p>
-        <form onSubmit={submit} className="mt-6 grid gap-4 sm:grid-cols-2">
-          <Input placeholder="Nome completo *" value={form.nome_completo} onChange={(v)=>setForm({...form, nome_completo:v})} />
-          <Input placeholder="Email *" type="email" value={form.email} onChange={(v)=>setForm({...form, email:v})} />
-          <Input placeholder="Telefone *" value={form.telefone} onChange={(v)=>setForm({...form, telefone:v})} />
-          <select value={form.finalidade} onChange={(e)=>setForm({...form, finalidade: e.target.value})} className="rounded-xl border border-border bg-background px-4 py-3 text-sm">
-            {["Capital de Giro","Expansão do Negócio","Despesas Pessoais","Agricultura","Outros"].map(o => <option key={o}>{o}</option>)}
-          </select>
-          <textarea placeholder="Mensagem adicional" value={form.mensagem} onChange={(e)=>setForm({...form, mensagem: e.target.value})} rows={4} className="sm:col-span-2 rounded-xl border border-border bg-background px-4 py-3 text-sm" />
-          <button type="submit" disabled={loading} className="sm:col-span-2 inline-flex items-center justify-center gap-2 rounded-xl bg-brand-green py-3.5 font-semibold text-white hover:bg-brand-green-dark disabled:opacity-60">
-            {loading && <Loader2 className="animate-spin" size={16}/>} {loading ? "A enviar..." : "Enviar Pedido de Crédito"}
-          </button>
-        </form>
-      </div>
-    </section>
-  );
-}
-
-function Input({ placeholder, value, onChange, type = "text" }: { placeholder: string; value: string; onChange: (v: string) => void; type?: string }) {
-  return <input placeholder={placeholder} type={type} value={value} onChange={(e)=>onChange(e.target.value)} className="rounded-xl border border-border bg-background px-4 py-3 text-sm" />;
 }
