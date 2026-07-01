@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageHero } from "@/components/PageHero";
 import { Wheat, Store, Home } from "lucide-react";
 import { useScrollAnimation, useCountUp } from "@/hooks/useScrollAnimation";
+import heroImpact from "@/assets/hero-impact.jpg";
 
 export const Route = createFileRoute("/impacto")({
   head: () => ({
@@ -35,9 +36,9 @@ function Impacto() {
   ];
   return (
     <>
-      <PageHero title="O Nosso Impacto" breadcrumb="Impacto" subtitle="Acreditamos no potencial das pessoas. Cada crédito é uma oportunidade de transformação." />
-      <section ref={ref} className="mx-auto mt-16 w-[min(1280px,calc(100%-2rem))] rounded-3xl bg-brand-green px-6 py-12 text-white md:px-12">
-        <div className="grid gap-8 text-center sm:grid-cols-2 lg:grid-cols-4">
+      <PageHero title="O Nosso Impacto" breadcrumb="Impacto" subtitle="Acreditamos no potencial das pessoas. Cada crédito é uma oportunidade de transformação." imageSrc={heroImpact} imageAlt="Mercado local apoiado por microcrédito" />
+      <section ref={ref} className="w-full bg-brand-green px-6 py-14 text-white md:px-12">
+        <div className="mx-auto grid max-w-7xl gap-8 text-center sm:grid-cols-2 lg:grid-cols-4">
           {stats.map((s) => (
             <div key={s.l}>
               <div className="text-5xl font-extrabold">{s.v}</div>
@@ -46,15 +47,18 @@ function Impacto() {
           ))}
         </div>
       </section>
-      <section className="mx-auto mt-16 max-w-4xl px-6 text-center">
+      <section className="w-full px-6 py-16 text-center">
+        <div className="mx-auto max-w-4xl">
         <h2 className="text-3xl font-extrabold md:text-4xl">A nossa missão</h2>
         <p className="mt-5 text-lg text-muted-foreground">
           Somos uma instituição licenciada pelo <strong className="text-brand-green">Banco de Moçambique</strong> desde Abril de 2023.
           A nossa missão é proporcionar soluções financeiras acessíveis a quem mais precisa,
           contribuindo para o crescimento económico e bem-estar das famílias moçambicanas.
         </p>
+        </div>
       </section>
-      <section className="mx-auto mt-16 max-w-7xl px-6">
+      <section className="w-full px-6 py-16">
+        <div className="mx-auto max-w-7xl">
         <div className="grid gap-6 md:grid-cols-3">
           {cats.map((c) => (
             <div key={c.t} className="hover-card rounded-2xl border border-border bg-card p-7">
@@ -64,8 +68,9 @@ function Impacto() {
             </div>
           ))}
         </div>
+        </div>
       </section>
-      <section className="mx-auto mt-16 max-w-7xl px-6 text-center">
+      <section className="w-full px-6 py-16 text-center">
         <Link to="/contactos" className="inline-flex rounded-xl bg-brand-green px-8 py-4 font-semibold text-white hover:bg-brand-green-dark">Faz parte da nossa história</Link>
       </section>
     </>

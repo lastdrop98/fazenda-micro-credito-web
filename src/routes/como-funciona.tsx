@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageHero } from "@/components/PageHero";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import heroHow from "@/assets/hero-how.jpg";
 
 export const Route = createFileRoute("/como-funciona")({
   head: () => ({
@@ -37,8 +38,9 @@ const faqs = [
 function ComoFunciona() {
   return (
     <>
-      <PageHero title="Como Solicitar o Teu Crédito" breadcrumb="Como Funciona" subtitle="Um processo simples, rápido e transparente em 5 passos." />
-      <section className="mx-auto mt-16 max-w-5xl px-6">
+      <PageHero title="Como Solicitar o Teu Crédito" breadcrumb="Como Funciona" subtitle="Um processo simples, rápido e transparente em 5 passos." imageSrc={heroHow} imageAlt="Cliente a entregar documentos para pedido de crédito" />
+      <section className="w-full px-6 py-16">
+        <div className="mx-auto max-w-5xl">
         <div className="space-y-5">
           {steps.map((s, i) => (
             <div key={s.t} className="relative flex gap-6 rounded-2xl border border-border bg-card p-6 transition hover:border-brand-green hover:shadow-md">
@@ -50,9 +52,11 @@ function ComoFunciona() {
             </div>
           ))}
         </div>
+        </div>
       </section>
 
-      <section className="mx-auto mt-20 max-w-4xl px-6">
+      <section className="w-full px-6 py-16">
+        <div className="mx-auto max-w-4xl">
         <h2 className="text-center text-3xl font-extrabold md:text-4xl">Perguntas <span className="text-brand-green">Frequentes</span></h2>
         <Accordion type="single" collapsible className="mt-10 space-y-3">
           {faqs.map((f, i) => (
@@ -62,6 +66,7 @@ function ComoFunciona() {
             </AccordionItem>
           ))}
         </Accordion>
+        </div>
       </section>
     </>
   );

@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageHero } from "@/components/PageHero";
 import { Calendar, Zap, Check } from "lucide-react";
+import heroCredit from "@/assets/hero-credit.jpg";
 
 export const Route = createFileRoute("/credito")({
   head: () => ({
@@ -40,8 +41,9 @@ const requisitos = [
 function Credito() {
   return (
     <>
-      <PageHero title="As Nossas Soluções de Crédito" breadcrumb="Crédito" subtitle="Duas linhas de crédito desenhadas para diferentes necessidades. Escolhe a que melhor se adapta ao teu objectivo." />
-      <section className="mx-auto mt-16 max-w-7xl px-6">
+      <PageHero title="As Nossas Soluções de Crédito" breadcrumb="Crédito" subtitle="Duas linhas de crédito desenhadas para diferentes necessidades. Escolhe a que melhor se adapta ao teu objectivo." imageSrc={heroCredit} imageAlt="Comerciante a analisar solução de crédito" />
+      <section className="w-full px-6 py-16">
+        <div className="mx-auto max-w-7xl">
         <div className="grid gap-6 md:grid-cols-2">
           <article className="relative overflow-hidden rounded-3xl border-2 border-brand-green bg-card p-8 shadow-lg">
             <span className="absolute right-6 top-6 rounded-full bg-brand-green px-3 py-1 text-xs font-bold uppercase text-white">Mensal</span>
@@ -68,9 +70,11 @@ function Credito() {
             <Link to="/simulacao" search={{ tipo: "quinzenal" }} className="mt-6 block rounded-xl bg-brand-navy py-3.5 text-center font-semibold text-white hover:bg-brand-navy-soft">Solicitar Este Crédito</Link>
           </article>
         </div>
+        </div>
       </section>
 
-      <section className="mx-auto mt-16 max-w-7xl px-6">
+      <section className="w-full px-6 py-16">
+        <div className="mx-auto max-w-7xl">
         <h2 className="text-3xl font-extrabold">Montantes Disponíveis</h2>
         <div className="mt-6 grid gap-5 md:grid-cols-2">
           <div className="hover-card rounded-2xl border border-border bg-card p-7">
@@ -82,9 +86,11 @@ function Credito() {
             <p className="mt-2 text-2xl font-extrabold">75.000 – 300.000 MZN</p>
           </div>
         </div>
+        </div>
       </section>
 
-      <section className="mx-auto mt-16 max-w-7xl px-6">
+      <section className="w-full px-6 py-16">
+        <div className="mx-auto max-w-7xl">
         <h2 className="text-3xl font-extrabold">Preçário e Taxas</h2>
         <div className="mt-6 overflow-hidden rounded-2xl border border-border bg-card">
           <table className="w-full text-sm">
@@ -98,9 +104,11 @@ function Credito() {
             </tbody>
           </table>
         </div>
+        </div>
       </section>
 
-      <section className="mx-auto mt-16 max-w-7xl px-6">
+      <section className="w-full px-6 py-16">
+        <div className="mx-auto max-w-7xl">
         <h2 className="text-3xl font-extrabold">Requisitos</h2>
         <div className="mt-6 grid gap-3 sm:grid-cols-2">
           {requisitos.map((r) => (
@@ -109,6 +117,7 @@ function Credito() {
               <span className="text-sm font-medium">{r}</span>
             </div>
           ))}
+        </div>
         </div>
       </section>
     </>

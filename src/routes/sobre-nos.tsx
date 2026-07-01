@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageHero } from "@/components/PageHero";
 import { Target, Settings2, TrendingUp, CheckCircle2, Scale, Handshake, RefreshCcw, Star } from "lucide-react";
+import heroAbout from "@/assets/hero-about.jpg";
 
 export const Route = createFileRoute("/sobre-nos")({
   head: () => ({
@@ -30,8 +31,9 @@ const valores = [
 function SobreNos() {
   return (
     <>
-      <PageHero title="Quem Somos" breadcrumb="Sobre Nós" />
-      <section className="mx-auto mt-16 max-w-5xl px-6">
+      <PageHero title="Quem Somos" breadcrumb="Sobre Nós" imageSrc={heroAbout} imageAlt="Consultor de microcrédito a orientar cliente" />
+      <section className="w-full px-6 py-16">
+        <div className="mx-auto max-w-5xl">
         <p className="text-lg leading-relaxed text-foreground">
           Somos uma instituição financeira especializada na oferta de microcréditos,
           dedicada a promover acesso a crédito. Somos um operador de microcrédito
@@ -57,8 +59,10 @@ function SobreNos() {
             </p>
           </div>
         </div>
+        </div>
       </section>
-      <section className="mx-auto mt-20 max-w-7xl px-6">
+      <section className="w-full px-6 py-16">
+        <div className="mx-auto max-w-7xl">
         <h2 className="text-center text-3xl font-extrabold md:text-4xl">Nossa <span className="text-brand-green">Ambição</span></h2>
         <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {ambicao.map((a) => (
@@ -68,8 +72,10 @@ function SobreNos() {
             </div>
           ))}
         </div>
+        </div>
       </section>
-      <section className="mx-auto mt-20 max-w-7xl px-6">
+      <section className="w-full px-6 py-16">
+        <div className="mx-auto max-w-7xl">
         <h2 className="text-center text-3xl font-extrabold md:text-4xl">Nossos <span className="text-brand-green">Valores</span></h2>
         <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {valores.map((v) => (
@@ -79,6 +85,7 @@ function SobreNos() {
               <p className="mt-2 text-sm text-muted-foreground">{v.d}</p>
             </div>
           ))}
+        </div>
         </div>
       </section>
     </>

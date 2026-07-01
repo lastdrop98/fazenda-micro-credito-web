@@ -3,6 +3,8 @@ import { Facebook, Instagram, Linkedin, MapPin, Phone, Mail, Clock, MessageCircl
 import { Logo } from "./Logo";
 
 export function SiteFooter() {
+  const whatsappUrl = "https://api.whatsapp.com/send?phone=258844449380";
+
   return (
     <footer className="mt-24 border-t-2 border-brand-green bg-brand-navy text-white/80">
       <div className="mx-auto grid max-w-7xl gap-10 px-6 py-14 md:grid-cols-2 lg:grid-cols-4">
@@ -18,7 +20,7 @@ export function SiteFooter() {
             <a href="https://facebook.com/fazendamicrocredito" target="_blank" rel="noreferrer" aria-label="Facebook" className="rounded-full bg-white/10 p-2 transition hover:bg-brand-green hover:text-white"><Facebook size={16} /></a>
             <a href="https://instagram.com/fazendamicrocredito" target="_blank" rel="noreferrer" aria-label="Instagram" className="rounded-full bg-white/10 p-2 transition hover:bg-brand-green hover:text-white"><Instagram size={16} /></a>
             <a href="https://linkedin.com/company/fazendamicrocredito" target="_blank" rel="noreferrer" aria-label="LinkedIn" className="rounded-full bg-white/10 p-2 transition hover:bg-brand-green hover:text-white"><Linkedin size={16} /></a>
-            <a href="https://wa.me/258844449380" target="_blank" rel="noreferrer" aria-label="WhatsApp" className="rounded-full bg-white/10 p-2 transition hover:bg-brand-green hover:text-white"><MessageCircle size={16} /></a>
+            <a href={whatsappUrl} target="_blank" rel="noreferrer" aria-label="WhatsApp" className="rounded-full bg-white/10 p-2 transition hover:bg-brand-green hover:text-white"><MessageCircle size={16} /></a>
           </div>
         </div>
         <div>
@@ -49,8 +51,8 @@ export function SiteFooter() {
               </a>
             </li>
             <li>
-              <a href="tel:+258844449380" className="flex gap-2 hover-link">
-                <Phone size={16} className="mt-0.5 shrink-0 text-brand-green" /> +258 84 444 9380
+              <a href={whatsappUrl} target="_blank" rel="noreferrer" className="flex gap-2 hover-link">
+                <MessageCircle size={16} className="mt-0.5 shrink-0 text-brand-green" /> +258 84 444 9380
               </a>
             </li>
             <li>

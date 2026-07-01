@@ -151,7 +151,8 @@ const solucoes = [
 
 function Solucoes() {
   return (
-    <section className="mx-auto mt-20 max-w-7xl px-6">
+    <section className="w-full px-6 py-20">
+      <div className="mx-auto max-w-7xl">
       <div className="grid gap-10 lg:grid-cols-[1fr_2fr]">
         <div>
           <span className="text-xs font-bold uppercase tracking-[0.2em] text-brand-green">Soluções de Crédito</span>
@@ -186,6 +187,7 @@ function Solucoes() {
           ))}
         </div>
       </div>
+      </div>
     </section>
   );
 }
@@ -204,8 +206,8 @@ function Stats() {
     { v: `${d}`, l: "Licenciada pelo BdM" },
   ];
   return (
-    <section ref={ref} className="mx-auto mt-20 w-[min(1280px,calc(100%-2rem))] rounded-3xl bg-brand-green px-6 py-12 text-white md:px-12">
-      <div className="grid gap-8 text-center sm:grid-cols-2 lg:grid-cols-4">
+    <section ref={ref} className="w-full bg-brand-green px-6 py-14 text-white md:px-12">
+      <div className="mx-auto grid max-w-7xl gap-8 text-center sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((s) => (
           <div key={s.l}>
             <div className="text-3xl font-extrabold md:text-4xl">{s.v}</div>
@@ -224,7 +226,8 @@ function Testimonials() {
     { q: "Finalmente uma instituição que confia em pequenos negócios como o meu.", n: "Fátima Nhantumbo", r: "Costureira, Maputo" },
   ];
   return (
-    <section className="mx-auto mt-20 max-w-7xl px-6">
+    <section className="w-full px-6 py-20">
+      <div className="mx-auto max-w-7xl">
       <div className="text-center">
         <span className="text-xs font-bold uppercase tracking-[0.2em] text-brand-green">Testemunhos</span>
         <h2 className="mt-3 text-3xl font-extrabold md:text-4xl">Histórias que nos inspiram</h2>
@@ -241,13 +244,14 @@ function Testimonials() {
           </div>
         ))}
       </div>
+      </div>
     </section>
   );
 }
 
 function CtaBanner() {
   return (
-    <section className="mx-auto mt-20 w-[min(1280px,calc(100%-2rem))] overflow-hidden rounded-3xl bg-brand-navy px-6 py-14 text-white md:px-12">
+    <section className="w-full bg-brand-navy px-6 py-16 text-white md:px-12">
       <div className="mx-auto max-w-3xl text-center">
         <h2 className="text-3xl font-extrabold md:text-4xl">Pronto para crescer o teu negócio?</h2>
         <p className="mt-3 text-white/75">Solicita o teu crédito hoje e recebe aprovação em até 12 horas.</p>
