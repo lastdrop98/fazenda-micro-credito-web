@@ -6,6 +6,8 @@ import { Calendar, Zap, Minus, Plus, Loader2, Check, Download, Mail } from "luci
 import { PageHero } from "@/components/PageHero";
 import { supabase } from "@/lib/supabase";
 import jsPDF from "jspdf";
+import logoAsset from "@/assets/fazenda-logo.png.asset.json";
+import heroSimulation from "@/assets/hero-simulation.jpg";
 
 const searchSchema = z.object({ tipo: z.enum(["mensal", "quinzenal"]).optional() });
 
@@ -24,6 +26,17 @@ export const Route = createFileRoute("/simulacao")({
 
 const fmt = (n: number) =>
   new Intl.NumberFormat("pt-PT", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n) + " MZN";
+
+async function imageToDataUrl(src: string) {
+  const response = await fetch(src);
+  const blob = await response.blob();
+  return await new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result));
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
 
 function Simulacao() {
   const search = Route.useSearch();
@@ -52,28 +65,79 @@ function Simulacao() {
   const periodoLabel = tipo === "mensal" ? "mês" : "quinzena";
   const periodosLabel = tipo === "mensal" ? "mes(es)" : "quinzena(s)";
 
-  function generatePdf(id?: string | null) {
+  function simulationPayload(id: string) {
+    return {
+      id,
+      tipo_credito: tipo,
+      montante,
+      num_periodos: periodos,
+      taxa_juros: taxa,
+      taxa_preparo: taxaPreparo,
+      juros_total: jurosTotal,
+      prestacao_por_periodo: prestacao,
+      total_a_pagar: totalAPagar,
+      nome_cliente: nome.trim() || null,
+      telefone_cliente: telefone.trim() || null,
+      email_cliente: email.trim() || null,
+    };
+  }
+
+  async function generatePdf(id?: string | null) {
     const doc = new jsPDF();
+    let logoDataUrl: string | null = null;
+    try {
+      logoDataUrl = await imageToDataUrl(logoAsset.url);
+    } catch {
+      logoDataUrl = null;
+    }
     const periodoLabel = tipo === "mensal" ? "mês" : "quinzena";
     const periodosLabel = tipo === "mensal" ? "mes(es)" : "quinzena(s)";
+    const tituloCredito = tipo === "mensal" ? "Meu Crédito Fazenda" : "Meu Cash Rápido";
     doc.setFillColor(26, 35, 50);
-    doc.rect(0, 0, 210, 30, "F");
+    doc.rect(0, 0, 210, 42, "F");
+    if (logoDataUrl) {
+      doc.setFillColor(255, 255, 255);
+      doc.roundedRect(14, 9, 44, 22, 4, 4, "F");
+      doc.addImage(logoDataUrl, "PNG", 18, 12, 36, 16);
+    }
     doc.setTextColor(255, 255, 255);
-    doc.setFontSize(18);
-    doc.text("Fazenda Microcrédito", 14, 19);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(17);
+    doc.text("Fazenda Microcrédito", 66, 18);
     doc.setFontSize(10);
-    doc.text("Simulação de Crédito", 14, 26);
+    doc.setFont("helvetica", "normal");
+    doc.text("Simulação de Crédito", 66, 26);
+    doc.setTextColor(124, 184, 58);
+    doc.setFont("helvetica", "bold");
+    doc.text(tituloCredito, 66, 34);
     doc.setTextColor(20, 20, 20);
     doc.setFontSize(11);
-    let y = 45;
-    const line = (k: string, v: string) => { doc.setFont("helvetica","bold"); doc.text(k, 14, y); doc.setFont("helvetica","normal"); doc.text(v, 95, y); y += 8; };
+    let y = 58;
+    const heading = (text: string) => {
+      doc.setFillColor(232, 245, 208);
+      doc.roundedRect(14, y - 6, 182, 10, 2, 2, "F");
+      doc.setTextColor(26, 35, 50);
+      doc.setFont("helvetica", "bold");
+      doc.text(text, 18, y + 1);
+      y += 14;
+    };
+    const line = (k: string, v: string) => {
+      const safeValue = v || "—";
+      doc.setTextColor(26, 35, 50);
+      doc.setFont("helvetica", "bold");
+      doc.text(k, 18, y);
+      doc.setFont("helvetica", "normal");
+      doc.text(doc.splitTextToSize(safeValue, 92), 96, y);
+      y += Math.max(8, doc.splitTextToSize(safeValue, 92).length * 6);
+    };
+    heading("Dados do Cliente");
     line("Data:", new Date().toLocaleString("pt-PT"));
-    if (id) line("Referência:", id.slice(0, 8).toUpperCase());
-    if (nome) line("Nome:", nome);
-    if (telefone) line("Telefone:", telefone);
-    if (email) line("Email:", email);
-    y += 4;
-    doc.setDrawColor(124, 184, 58); doc.line(14, y, 196, y); y += 8;
+    line("Referência:", id ? id.slice(0, 8).toUpperCase() : "—");
+    line("Nome:", nome.trim());
+    line("Telefone:", telefone.trim());
+    line("Email:", email.trim());
+    y += 3;
+    heading("Dados da Simulação");
     line("Tipo de Crédito:", tipo === "mensal" ? "Meu Crédito Fazenda (Mensal)" : "Meu Cash Rápido (Quinzenal)");
     line("Montante Solicitado:", fmt(montante));
     line("Taxa de Juros:", `${(taxa * 100).toFixed(0)}% por ${periodoLabel}`);
@@ -81,10 +145,15 @@ function Simulacao() {
     line("Taxa de Preparo (4%):", fmt(taxaPreparo));
     line("Juros Total:", fmt(jurosTotal));
     y += 4;
-    doc.setDrawColor(124, 184, 58); doc.line(14, y, 196, y); y += 8;
-    doc.setTextColor(124, 184, 58); doc.setFont("helvetica","bold");
-    doc.text("Prestação por Período:", 14, y); doc.text(fmt(prestacao), 95, y); y += 8;
-    doc.text("Total a Pagar:", 14, y); doc.text(fmt(totalAPagar), 95, y);
+    doc.setFillColor(26, 35, 50);
+    doc.roundedRect(14, y, 182, 30, 4, 4, "F");
+    doc.setTextColor(255, 255, 255);
+    doc.setFont("helvetica","bold");
+    doc.text("Prestação por Período", 22, y + 11);
+    doc.text("Total a Pagar", 22, y + 23);
+    doc.setTextColor(124, 184, 58);
+    doc.text(fmt(prestacao), 118, y + 11);
+    doc.text(fmt(totalAPagar), 118, y + 23);
     doc.setTextColor(120,120,120); doc.setFont("helvetica","normal"); doc.setFontSize(8);
     doc.text("Simulação indicativa. Sujeita a análise de crédito. Fazenda Microcrédito — Licenciada pelo Banco de Moçambique.", 14, 285);
     doc.save(`simulacao-fazenda-${Date.now()}.pdf`);
@@ -92,30 +161,16 @@ function Simulacao() {
 
   async function guardar() {
     if (montante < 10000) return toast.error("Montante mínimo: 10.000 MZN");
+    const id = savedId ?? crypto.randomUUID();
     setSaving(true);
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("credit_simulations")
-      .insert({
-        tipo_credito: tipo,
-        montante,
-        num_periodos: periodos,
-        taxa_juros: taxa,
-        taxa_preparo: taxaPreparo,
-        juros_total: jurosTotal,
-        prestacao_por_periodo: prestacao,
-        total_a_pagar: totalAPagar,
-        nome_cliente: nome || null,
-        telefone_cliente: telefone || null,
-        email_cliente: email || null,
-      })
-      .select()
-      .single();
+      .insert(simulationPayload(id));
     setSaving(false);
-    if (error) { toast.error("Erro ao guardar. A descarregar PDF mesmo assim."); generatePdf(null); return; }
-    const id = data!.id as string;
+    if (error) { toast.error(`Erro ao guardar: ${error.message}. A descarregar PDF mesmo assim.`); await generatePdf(null); return; }
     setSavedId(id);
     toast.success("Simulação guardada! PDF a ser descarregado.");
-    generatePdf(id);
+    await generatePdf(id);
   }
 
   async function solicitar() {
@@ -124,20 +179,18 @@ function Simulacao() {
     setRequesting(true);
     let id = savedId;
     if (!id) {
-      const { data } = await supabase.from("credit_simulations").insert({
-        tipo_credito: tipo, montante, num_periodos: periodos, taxa_juros: taxa,
-        taxa_preparo: taxaPreparo, juros_total: jurosTotal, prestacao_por_periodo: prestacao,
-        total_a_pagar: totalAPagar, nome_cliente: nome, telefone_cliente: telefone, email_cliente: email,
-      }).select().single();
-      id = (data?.id as string) ?? null;
-      if (id) setSavedId(id);
+      id = crypto.randomUUID();
+      const { error: simulationError } = await supabase.from("credit_simulations").insert(simulationPayload(id));
+      if (simulationError) id = null;
+      else setSavedId(id);
     }
-    await supabase.from("credit_requests").insert({
+    const { error: requestError } = await supabase.from("credit_requests").insert({
       nome_completo: nome, email, telefone,
       tipo_credito: tipo, montante_solicitado: montante,
       finalidade: "Crédito simulado", simulation_id: id,
     });
     setRequesting(false);
+    if (requestError) return toast.error(`Erro ao registar pedido: ${requestError.message}`);
     const periodoLabel = tipo === "mensal" ? "mês" : "quinzena";
     const subject = encodeURIComponent(`[Fazenda] Pedido de Crédito - ${nome}`);
     const body =
@@ -163,13 +216,14 @@ Total a Pagar: ${fmt(totalAPagar)}
 Referência: ${id ? id.slice(0, 8).toUpperCase() : "—"}
 `;
     toast.success("Pedido registado! A abrir o teu email...");
-    window.open(`mailto:info@fazenda.co.mz?subject=${subject}&body=${encodeURIComponent(body)}`);
+    window.location.href = `mailto:info@fazenda.co.mz?subject=${subject}&body=${encodeURIComponent(body)}`;
   }
 
   return (
     <>
-      <PageHero title="Fazer Simulação de Crédito" breadcrumb="Simulação" subtitle="Simula o teu crédito gratuitamente e descobre as condições disponíveis." />
-      <section className="mx-auto mt-12 grid max-w-7xl gap-8 px-6 lg:grid-cols-[1.3fr_1fr]">
+      <PageHero title="Fazer Simulação de Crédito" breadcrumb="Simulação" subtitle="Simula o teu crédito gratuitamente e descobre as condições disponíveis." imageSrc={heroSimulation} imageAlt="Empreendedor a simular crédito no telemóvel" />
+      <section className="w-full px-6 py-12">
+        <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[1.3fr_1fr]">
         <div className="space-y-8">
           <div>
             <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">1. Tipo de Crédito</h3>
@@ -269,6 +323,7 @@ Referência: ${id ? id.slice(0, 8).toUpperCase() : "—"}
             <p className="mt-4 text-xs text-white/60">Simulação gratuita e sem compromisso. Os valores são indicativos. A decisão final está sujeita a análise de crédito.</p>
           </div>
         </aside>
+        </div>
       </section>
     </>
   );
