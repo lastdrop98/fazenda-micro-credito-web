@@ -161,6 +161,11 @@ function Simulacao() {
 
   async function guardar() {
     if (montante < 10000) return toast.error("Montante mínimo: 10.000 MZN");
+    if (savedId) {
+      toast.success("PDF a ser descarregado.");
+      await generatePdf(savedId);
+      return;
+    }
     const id = savedId ?? crypto.randomUUID();
     setSaving(true);
     const { error } = await supabase
