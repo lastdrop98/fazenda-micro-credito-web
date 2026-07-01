@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { MapPin, Phone, Mail, Clock, Loader2, Facebook, Instagram, Linkedin, MessageCircle } from "lucide-react";
 import { PageHero } from "@/components/PageHero";
 import { supabase } from "@/lib/supabase";
+import heroContact from "@/assets/hero-contact.jpg";
 
 export const Route = createFileRoute("/contactos")({
   head: () => ({
@@ -57,8 +58,8 @@ function Contactos() {
     const subject = encodeURIComponent(`[Fazenda] ${form.assunto}${form.nome ? " - " + form.nome : ""}`);
     window.open(`mailto:info@fazenda.co.mz?subject=${subject}&body=${encodeURIComponent(buildBody())}`);
   }
-  function openWhatsApp() {
-    window.open(`https://wa.me/258844449380?text=${encodeURIComponent(buildBody())}`, "_blank");
+  function whatsappHref() {
+    return `https://api.whatsapp.com/send?phone=258844449380&text=${encodeURIComponent(buildBody())}`;
   }
 
   const info = [
@@ -71,8 +72,9 @@ function Contactos() {
 
   return (
     <>
-      <PageHero title="Fala Connosco" breadcrumb="Contactos" subtitle="Estamos aqui para ajudar. Solicita o teu crédito ou tira as tuas dúvidas." />
-      <section className="mx-auto mt-12 grid max-w-7xl gap-10 px-6 lg:grid-cols-2">
+      <PageHero title="Fala Connosco" breadcrumb="Contactos" subtitle="Estamos aqui para ajudar. Solicita o teu crédito ou tira as tuas dúvidas." imageSrc={heroContact} imageAlt="Atendimento de microcrédito Fazenda" />
+      <section className="w-full px-6 py-12">
+        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-2">
         <div>
           <h2 className="text-2xl font-extrabold">Informações de Contacto</h2>
           <div className="mt-6 space-y-5">
@@ -90,7 +92,7 @@ function Contactos() {
             <a href="https://facebook.com/fazendamicrocredito" target="_blank" rel="noreferrer" aria-label="Facebook" className="rounded-full bg-brand-navy p-3 text-white transition hover:bg-brand-green"><Facebook size={18}/></a>
             <a href="https://instagram.com/fazendamicrocredito" target="_blank" rel="noreferrer" aria-label="Instagram" className="rounded-full bg-brand-navy p-3 text-white transition hover:bg-brand-green"><Instagram size={18}/></a>
             <a href="https://linkedin.com/company/fazendamicrocredito" target="_blank" rel="noreferrer" aria-label="LinkedIn" className="rounded-full bg-brand-navy p-3 text-white transition hover:bg-brand-green"><Linkedin size={18}/></a>
-            <a href="https://wa.me/258844449380" target="_blank" rel="noreferrer" aria-label="WhatsApp" className="rounded-full bg-brand-navy p-3 text-white transition hover:bg-brand-green"><MessageCircle size={18}/></a>
+            <a href="https://api.whatsapp.com/send?phone=258844449380" target="_blank" rel="noreferrer" aria-label="WhatsApp" className="rounded-full bg-brand-navy p-3 text-white transition hover:bg-brand-green"><MessageCircle size={18}/></a>
           </div>
 
           <a href="https://maps.app.goo.gl/WpvDMgZB7c3i5U7v5" target="_blank" rel="noreferrer" className="mt-6 block overflow-hidden rounded-2xl border border-border">
@@ -133,12 +135,13 @@ function Contactos() {
               <button type="button" onClick={openMail} className="hover-btn inline-flex items-center justify-center gap-2 rounded-xl border-2 border-brand-navy py-3 text-sm font-semibold text-brand-navy">
                 <Mail size={16}/> Enviar por Email
               </button>
-              <button type="button" onClick={openWhatsApp} className="hover-btn inline-flex items-center justify-center gap-2 rounded-xl bg-[#25D366] py-3 text-sm font-semibold text-white">
+              <a href={whatsappHref()} target="_blank" rel="noreferrer" className="hover-btn inline-flex items-center justify-center gap-2 rounded-xl bg-brand-green py-3 text-sm font-semibold text-white">
                 <MessageCircle size={16}/> Enviar por WhatsApp
-              </button>
+              </a>
             </div>
           </div>
         </form>
+        </div>
       </section>
     </>
   );

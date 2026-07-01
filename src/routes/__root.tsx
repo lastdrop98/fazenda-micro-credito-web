@@ -89,13 +89,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary" },
       { name: "twitter:title", content: "Fazenda Microcrédito — Crédito acessível em Moçambique" },
       { name: "twitter:description", content: "Instituição de microcrédito licenciada pelo Banco de Moçambique. Soluções de crédito acessíveis para negócios, famílias e indivíduos." },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/XtuyJ8lL0vUrUJO5TCLsg6vCs4h1/social-images/social-1782725049428-Captura_de_ecrã_2026-06-29,_às_11.23.27.webp" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/XtuyJ8lL0vUrUJO5TCLsg6vCs4h1/social-images/social-1782725049428-Captura_de_ecrã_2026-06-29,_às_11.23.27.webp" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", type: "image/png", href: "/__l5e/assets-v1/84cbabb7-cc36-4cf6-9b10-62be70bd9efc/fazenda-logo.png" },
-      { rel: "apple-touch-icon", href: "/__l5e/assets-v1/84cbabb7-cc36-4cf6-9b10-62be70bd9efc/fazenda-logo.png" },
+      { rel: "icon", type: "image/png", href: "/favicon.png" },
+      { rel: "shortcut icon", href: "/favicon.ico" },
+      { rel: "apple-touch-icon", href: "/favicon.png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" },
@@ -109,7 +108,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="pt-MZ">
       <head>
         <HeadContent />
       </head>
@@ -128,7 +127,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <div className="flex min-h-screen flex-col bg-background">
         <SiteHeader />
-        <main className="flex-1">
+        <main className="min-w-0 flex-1 overflow-x-hidden">
           <Outlet />
         </main>
         <SiteFooter />
