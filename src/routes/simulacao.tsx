@@ -101,14 +101,14 @@ function Simulacao() {
       doc.addImage(logoDataUrl, "PNG", 18, 12, 36, 16);
     }
     doc.setTextColor(255, 255, 255);
-    doc.setFont("helvetica", "bold");
+    doc.setFont("helvetica", "normal");
     doc.setFontSize(17);
     doc.text("Fazenda Microcrédito", 66, 18);
     doc.setFontSize(10);
     doc.setFont("helvetica", "normal");
     doc.text("Simulação de Crédito", 66, 26);
     doc.setTextColor(124, 184, 58);
-    doc.setFont("helvetica", "bold");
+    doc.setFont("helvetica", "normal");
     doc.text(tituloCredito, 66, 34);
     doc.setTextColor(20, 20, 20);
     doc.setFontSize(11);
@@ -117,14 +117,14 @@ function Simulacao() {
       doc.setFillColor(232, 245, 208);
       doc.roundedRect(14, y - 6, 182, 10, 2, 2, "F");
       doc.setTextColor(26, 35, 50);
-      doc.setFont("helvetica", "bold");
+      doc.setFont("helvetica", "normal");
       doc.text(text, 18, y + 1);
       y += 14;
     };
     const line = (k: string, v: string) => {
       const safeValue = v || "—";
       doc.setTextColor(26, 35, 50);
-      doc.setFont("helvetica", "bold");
+      doc.setFont("helvetica", "normal");
       doc.text(k, 18, y);
       doc.setFont("helvetica", "normal");
       doc.text(doc.splitTextToSize(safeValue, 92), 96, y);
@@ -148,7 +148,7 @@ function Simulacao() {
     doc.setFillColor(26, 35, 50);
     doc.roundedRect(14, y, 182, 30, 4, 4, "F");
     doc.setTextColor(255, 255, 255);
-    doc.setFont("helvetica","bold");
+    doc.setFont("helvetica","normal");
     doc.text("Prestação por Período", 22, y + 11);
     doc.text("Total a Pagar", 22, y + 23);
     doc.setTextColor(124, 184, 58);
