@@ -10,6 +10,7 @@ const links = [
   { to: "/como-funciona", label: "Como Funciona" },
   { to: "/simulacao", label: "Simulação" },
   { to: "/impacto", label: "Impacto" },
+  { to: "/perguntas-frequentes", label: "FAQ" },
   { to: "/contactos", label: "Contactos" },
 ] as const;
 
