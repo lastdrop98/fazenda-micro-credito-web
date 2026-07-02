@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { PageHero } from "@/components/PageHero";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { MessageCircle, Mail } from "lucide-react";
@@ -124,6 +124,12 @@ const groups: Group[] = [
 ];
 
 function PerguntasFrequentes() {
+  const waBase = "https://api.whatsapp.com/send?phone=258844449380&text=";
+  const email = "info@fazenda.co.mz";
+  const buildMail = (subject: string, body: string) =>
+    `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  const waLink = (msg: string) => waBase + encodeURIComponent(msg);
+
   return (
     <>
       <PageHero
@@ -134,65 +140,94 @@ function PerguntasFrequentes() {
         imageAlt="Consultora Fazenda Microcrédito a esclarecer dúvidas de uma cliente"
       />
 
-      <section className="w-full px-6 py-16">
-        <div className="mx-auto max-w-4xl space-y-14">
-          {groups.map((group, gi) => (
-            <div key={group.title}>
-              <div className="mb-6 flex items-center gap-4">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-green text-sm font-extrabold text-white">
-                  {String(gi + 1).padStart(2, "0")}
-                </span>
-                <h2 className="text-2xl font-extrabold md:text-3xl">
-                  {group.title.split(" ")[0]}{" "}
-                  <span className="text-brand-green">
-                    {group.title.split(" ").slice(1).join(" ")}
-                  </span>
-                </h2>
-              </div>
-              <Accordion type="single" collapsible className="space-y-3">
-                {group.items.map((f, i) => (
-                  <AccordionItem
-                    key={i}
-                    value={`${gi}-${i}`}
-                    className="overflow-hidden rounded-2xl border border-border bg-card px-5"
-                  >
-                    <AccordionTrigger className="text-left text-base font-semibold hover:no-underline">
-                      {f.q}
-                    </AccordionTrigger>
-                    <AccordionContent className="text-sm leading-relaxed text-muted-foreground">
-                      {f.a}
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
-            </div>
-          ))}
+      <section className="w-full px-4 py-12 sm:px-6 sm:py-16">
+        <div className="mx-auto max-w-4xl">
+          <Accordion
+            type="single"
+            collapsible
+            defaultValue="group-0"
+            className="space-y-4"
+          >
+            {groups.map((group, gi) => (
+              <AccordionItem
+                key={group.title}
+                value={`group-${gi}`}
+                className="overflow-hidden rounded-2xl border border-border bg-card px-4 sm:px-5"
+              >
+                <AccordionTrigger className="py-5 hover:no-underline">
+                  <div className="flex min-w-0 items-center gap-3 sm:gap-4">
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-green text-xs font-extrabold text-white sm:h-10 sm:w-10 sm:text-sm">
+                      {String(gi + 1).padStart(2, "0")}
+                    </span>
+                    <h2 className="truncate text-lg font-extrabold sm:text-xl md:text-2xl">
+                      {group.title.split(" ")[0]}{" "}
+                      <span className="text-brand-green">
+                        {group.title.split(" ").slice(1).join(" ")}
+                      </span>
+                    </h2>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="pb-5">
+                  <Accordion type="single" collapsible className="space-y-2 sm:space-y-3">
+                    {group.items.map((f, i) => (
+                      <AccordionItem
+                        key={i}
+                        value={`${gi}-${i}`}
+                        className="overflow-hidden rounded-xl border border-border bg-background px-4 sm:px-5"
+                      >
+                        <AccordionTrigger className="text-left text-sm font-semibold hover:no-underline sm:text-base">
+                          {f.q}
+                        </AccordionTrigger>
+                        <AccordionContent className="text-sm leading-relaxed text-muted-foreground">
+                          {f.a}
+                        </AccordionContent>
+                      </AccordionItem>
+                    ))}
+                  </Accordion>
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
         </div>
       </section>
 
-      <section className="w-full px-6 pb-20">
-        <div className="mx-auto max-w-4xl rounded-3xl border-2 border-brand-green bg-brand-navy p-8 text-white md:p-12">
-          <h3 className="text-2xl font-extrabold md:text-3xl">
+      <section className="w-full px-4 pb-16 sm:px-6 sm:pb-20">
+        <div className="mx-auto max-w-4xl rounded-3xl border-2 border-brand-green bg-brand-navy p-6 text-white sm:p-8 md:p-12">
+          <h3 className="text-xl font-extrabold sm:text-2xl md:text-3xl">
             Ainda tens <span className="text-brand-green">dúvidas?</span>
           </h3>
           <p className="mt-3 text-white/80">
-            A nossa equipa está disponível para te ajudar a escolher a melhor solução de crédito.
+            Fala connosco por WhatsApp ou email — respondemos com o assunto da tua pergunta.
           </p>
-          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-            <a
-              href="https://api.whatsapp.com/send?phone=258844449380&text=Ol%C3%A1%2C%20tenho%20uma%20d%C3%BAvida%20sobre%20o%20cr%C3%A9dito%20Fazenda."
-              target="_blank"
-              rel="noreferrer"
-              className="hover-btn inline-flex items-center justify-center gap-2 rounded-xl bg-brand-green px-6 py-3 text-sm font-semibold text-white"
-            >
-              <MessageCircle size={16} /> Falar por WhatsApp
-            </a>
-            <Link
-              to="/contactos"
-              className="hover-btn inline-flex items-center justify-center gap-2 rounded-xl border border-white/40 px-6 py-3 text-sm font-semibold"
-            >
-              <Mail size={16} /> Enviar mensagem
-            </Link>
+          <div className="mt-6 grid gap-3 sm:grid-cols-2">
+            {groups.map((g) => {
+              const subject = `Dúvida — ${g.title}`;
+              const msg = `Olá Fazenda Microcrédito, tenho uma dúvida sobre "${g.title}".`;
+              return (
+                <div
+                  key={g.title}
+                  className="rounded-2xl border border-white/15 bg-white/5 p-4"
+                >
+                  <p className="text-sm font-semibold">{g.title}</p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <a
+                      href={waLink(msg)}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="hover-btn inline-flex items-center gap-2 rounded-lg bg-brand-green px-3 py-2 text-xs font-semibold text-white"
+                    >
+                      <MessageCircle size={14} /> WhatsApp
+                    </a>
+                    <a
+                      href={buildMail(subject, msg)}
+                      className="hover-btn inline-flex items-center gap-2 rounded-lg border border-white/40 px-3 py-2 text-xs font-semibold"
+                    >
+                      <Mail size={14} /> Email
+                    </a>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
